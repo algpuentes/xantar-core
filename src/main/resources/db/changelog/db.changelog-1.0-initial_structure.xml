@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+	<changeSet author="guerreal" id="create meals table">
+	
+	
+        <createTable tableName="meals" schemaName="xantar">
+			<column name="id" type="uuid">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(400)"/>
+            <column name="image_thumb" type="BYTEA"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="meals"/>
+        </rollback>
+    </changeSet>
+
+	<changeSet author="guerreal" id="create slots tables">
+        <createTable tableName="master_slots" schemaName="xantar">
+			<column name="id" type="SMALLSERIAL" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+		<createTable tableName="slots" schemaName="xantar">
+			<column name="id" type="BIGSERIAL" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+            <column name="meal_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slot_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+		<addForeignKeyConstraint baseTableSchemaName="xantar" baseTableName="slots" baseColumnNames="meal_id" constraintName="FK_MEAL_ID_SLOT_MEAL_ID" referencedTableSchemaName="xantar" referencedTableName="meals" referencedColumnNames="id" />
+		<addForeignKeyConstraint baseTableSchemaName="xantar" baseTableName="slots" baseColumnNames="slot_id" constraintName="FK_SLOT_ID_SLOT_SLOT_ID" referencedTableSchemaName="xantar" referencedTableName="master_slots" referencedColumnNames="id" />
+
+        <rollback>
+			<dropForeignKeyConstraint baseTableName="slots" baseTableSchemaName="xantar"/>
+            <dropTable tableName="master_slots" schemaName="xantar"/>
+            <dropTable tableName="slots" schemaName="xantar"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
