@@ -1,9 +1,14 @@
 package com.xantar.xantarcore.db;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -16,6 +21,12 @@ public class EMeal {
 	String	description;
 	byte[]	imageThumb;
 
-	public EMeal() {}
+	@ManyToMany
+	@JoinTable(name = "SLOTS", schema = "XANTAR",
+	joinColumns = { @JoinColumn(name = "meal_id", referencedColumnName = "id") },
+	inverseJoinColumns = { @JoinColumn(name = "slot_id", referencedColumnName = "id") })
+	Set<ESlot> slots = new HashSet<ESlot>();
+
+	EMeal() {}
 
 }
