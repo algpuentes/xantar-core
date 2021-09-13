@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xantar.xantarcore.db.MealsService;
 
 @RestController
-@RequestMapping("/meals")
+@RequestMapping("/api/meals")
 public class MealsController {
 
 	Logger						LOGGER	= LoggerFactory.getLogger(MealsController.class);

@@ -2,7 +2,6 @@ package com.xantar.xantarcore.db;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,7 +15,7 @@ import javax.persistence.Table;
 public class EMeal {
 
 	@Id
-	UUID	id;
+	int	id;
 	String	name;
 	String	description;
 	byte[]	imageThumb;

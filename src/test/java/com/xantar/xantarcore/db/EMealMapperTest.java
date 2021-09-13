@@ -1,5 +1,5 @@
 package com.xantar.xantarcore.db;
 
-public class EMealMapper {
+public class EMealMapperTest {
 
 }

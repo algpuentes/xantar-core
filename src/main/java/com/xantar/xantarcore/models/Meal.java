@@ -3,16 +3,15 @@ package com.xantar.xantarcore.models;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 public class Meal {
 
-	public final UUID	id;
+	public final int	id;
 	public final String	name;
 	public final String	description;
 	public final List<Slot> slots;
 
-	public Meal(UUID id, String name, String description, List<Slot> slots) {
+	public Meal(int id, String name, String description, List<Slot> slots) {
 		super();
 		this.id = id;
 		this.name = name;
