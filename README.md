@@ -17,7 +17,7 @@ After generating the jar, the Docker image of the service can be generated with:
 docker build -t xantar.jar .
 ```
 
-Once the image is ready, everything is ready to be deployed on Docker containers. For this purpose, the docker-compose.yml file will create the Postgresql container and the service container:
+Once the image is ready, everything is ready to be deployed on Docker containers. For this purpose, the docker-compose.yml file will create the PostgreSQL container and the service container:
 
 ```bash
 docker-compose up -d
