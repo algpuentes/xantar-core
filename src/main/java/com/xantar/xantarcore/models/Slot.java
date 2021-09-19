@@ -1,5 +1,8 @@
 package com.xantar.xantarcore.models;
 
+import java.util.Objects;
+import java.util.Optional;
+
 public class Slot {
 
 	public final int id;
@@ -8,6 +11,35 @@ public class Slot {
 	public Slot(int id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		return Optional.ofNullable(other)
+				.filter(Meal.class::isInstance)
+				.map(Meal.class::cast)
+				.filter(object -> this.compareAttributes(object))
+				.isPresent();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.id, this.name);
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		sb.append("id=" + this.id + ", ");
+		sb.append("name=" + this.name + "]");
+
+		return sb.toString();
+	}
+
+	private boolean compareAttributes(Meal meal) {
+		return this.id == meal.id
+				&& Objects.equals(this.name, meal.name);
 	}
 
 }

@@ -7,8 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "MEALS", schema = "XANTAR")
@@ -18,6 +21,8 @@ public class EMeal {
 	int	id;
 	String	name;
 	String	description;
+	@Lob
+	@Type(type="org.hibernate.type.BinaryType")
 	byte[]	imageThumb;
 
 	@ManyToMany

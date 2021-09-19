@@ -10,7 +10,8 @@ public class EMealMapper {
 
 	public static Meal toModel(EMeal eMeal) {
 		final List<Slot> slots = eMeal.slots.stream().map(eSlot -> ESlotMapper.toModel(eSlot)).collect(Collectors.toList());
-		return new Meal(eMeal.id, eMeal.name, eMeal.description, slots);
+
+		return new Meal(eMeal.id, eMeal.name, eMeal.description, slots, eMeal.imageThumb);
 	}
 
 	public static EMeal toEntity(Meal meal) {
@@ -18,6 +19,7 @@ public class EMealMapper {
 		eMeal.id = meal.id;
 		eMeal.name = meal.name;
 		eMeal.description = meal.description;
+
 		return eMeal;
 	}
 

@@ -25,6 +25,7 @@ public class MealsController {
 		if (mealsService == null) {
 			throw new IllegalArgumentException("Meals Service must not be null");
 		}
+
 		this.mealsService = mealsService;
 	}
 
