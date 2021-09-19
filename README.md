@@ -1,6 +1,6 @@
 # Xantar
 
-Xantar is a tool designed to help you scheduling
+Xantar is a tool designed to help you scheduling a meal plan
 
 ## Installation
 
