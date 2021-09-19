@@ -1,6 +1,7 @@
 package com.xantar.xantarcore.meals;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -45,8 +46,9 @@ public class MealResponseJson {
 
 		sb.append("[");
 		if(slots != null) {
-			this.slots.stream().forEach(slot -> sb.append(slot.toString()+","));
-			sb.deleteCharAt(sb.lastIndexOf(","));
+			sb.append(slots.stream()
+					.map(slot -> slot.toString())
+					.collect(Collectors.joining(",")));
 		}
 		sb.append("]");
 

@@ -1,10 +1,12 @@
 # Xantar
 
-Xantar is a tool designed to help you scheduling a meal plan
+Xantar is a tool designed to help you scheduling a meal plan.
 
 ## Installation
 
-To run the application locally with Docker, first generate the jar file with maven. The next commands run in a terminal in the xantar-core directory will generate the xantar.jar file in the target directory:
+First of all, create the application.properties file with the content of the application-template.properties and replace the values to set the datasource. Do the same with the docker-compose.yml.
+
+To run the application locally with Docker, first generate the jar file with maven. The next commands run in a PowerShell in the xantar-core directory will generate the xantar.jar file in the target directory:
 
 ```bash
 mvn clean

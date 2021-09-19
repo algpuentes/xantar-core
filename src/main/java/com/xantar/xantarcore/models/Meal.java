@@ -3,6 +3,7 @@ package com.xantar.xantarcore.models;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.xantar.xantarcore.utils.Base64Utils;
 
@@ -15,7 +16,6 @@ public class Meal {
 	public final byte[] imageThumb;
 
 	public Meal(int id, String name, String description, List<Slot> slots, byte[] imageThumb) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -56,8 +56,9 @@ public class Meal {
 
 		sb.append("{");
 		if(this.slots != null) {
-			this.slots.stream().forEach(slot -> sb.append(slot.toString()+","));
-			sb.deleteCharAt(sb.lastIndexOf(","));
+			sb.append(this.slots.stream()
+					.map(slot -> slot.toString())
+					.collect(Collectors.joining(",")));
 		}
 		sb.append("}");
 

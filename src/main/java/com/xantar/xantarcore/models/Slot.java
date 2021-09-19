@@ -16,8 +16,8 @@ public class Slot {
 	@Override
 	public boolean equals(Object other) {
 		return Optional.ofNullable(other)
-				.filter(Meal.class::isInstance)
-				.map(Meal.class::cast)
+				.filter(Slot.class::isInstance)
+				.map(Slot.class::cast)
 				.filter(object -> this.compareAttributes(object))
 				.isPresent();
 	}
@@ -37,9 +37,9 @@ public class Slot {
 		return sb.toString();
 	}
 
-	private boolean compareAttributes(Meal meal) {
-		return this.id == meal.id
-				&& Objects.equals(this.name, meal.name);
+	private boolean compareAttributes(Slot slot) {
+		return this.id == slot.id
+				&& Objects.equals(this.name, slot.name);
 	}
 
 }
