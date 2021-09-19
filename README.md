@@ -11,7 +11,7 @@ mvn clean
 mvn install -DskipTests
 ```
 
-After generating the jar, the docker image of the service can be generated with
+After generating the jar, the Docker image of the service can be generated with:
 
 ```bash
 docker build -t xantar.jar .
