@@ -1,0 +1,30 @@
+version: '3.1'
+services:
+  Xantar:
+    image: 'xantar.jar'
+    ports:
+      - "8080:8080"
+    depends_on:
+      PostgreSQL:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=<datasource-url>
+      - SPRING_DATASOURCE_USERNAME=<datasource-user>
+      - SPRING_DATASOURCE_PASSWORD=<datasource-pass>
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+
+  PostgreSQL:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=<postgres-pass>
+      - POSTGRES_USER=<postgres-user>
+      - POSTGRES_DB=<xantar-db>
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/

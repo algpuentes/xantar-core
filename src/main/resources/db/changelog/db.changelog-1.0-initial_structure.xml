@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    	http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet author="guerreal" id="create meals table">
+		<createTable tableName="meals" schemaName="xantar">
+			<column name="id" type="BIGSERIAL" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="VARCHAR(400)" />
+			<column name="image_thumb" type="BYTEA" />
+		</createTable>
+
+		<rollback>
+			<dropTable tableName="meals" />
+		</rollback>
+	</changeSet>
+
+	<changeSet author="guerreal" id="create slots tables">
+		<createTable tableName="master_slots" schemaName="xantar">
+			<column name="id" type="SMALLSERIAL" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="slots" schemaName="xantar">
+			<column name="id" type="BIGSERIAL" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="meal_id" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="slot_id" type="int">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<addForeignKeyConstraint baseTableSchemaName="xantar" baseTableName="slots" baseColumnNames="meal_id" constraintName="FK_MEAL_ID_SLOT_MEAL_ID" referencedTableSchemaName="xantar" referencedTableName="meals" referencedColumnNames="id" />
+		<addForeignKeyConstraint baseTableSchemaName="xantar" baseTableName="slots" baseColumnNames="slot_id" constraintName="FK_SLOT_ID_SLOT_SLOT_ID" referencedTableSchemaName="xantar" referencedTableName="master_slots" referencedColumnNames="id" />
+
+		<rollback>
+			<dropForeignKeyConstraint baseTableName="slots" baseTableSchemaName="xantar" />
+			<dropTable tableName="master_slots" schemaName="xantar" />
+			<dropTable tableName="slots" schemaName="xantar" />
+		</rollback>
+	</changeSet>
+	
+	<changeSet id="insert default data" author="guerreal">
+		<insert tableName="meals" schemaName="xantar">
+			<column name="name">Pancakes</column>
+			<column name="description">Easy and healthy recipy</column>
+		</insert>
+		<insert tableName="meals" schemaName="xantar">
+			<column name="name">Salad</column>
+			<column name="description">With cheese, tomato and tuna</column>
+		</insert>
+		<insert tableName="meals" schemaName="xantar">
+			<column name="name">Omelet</column>
+			<column name="description">Tipical spanish omelet</column>
+		</insert>
+		<insert tableName="meals" schemaName="xantar">
+			<column name="name">Ham toast</column>
+			<column name="description"></column>
+		</insert>
+		<insert tableName="meals" schemaName="xantar">
+			<column name="name">Lentils</column>
+			<column name="description">Grandma lentils</column>
+		</insert>
+		<insert tableName="meals" schemaName="xantar">
+			<column name="name">Yogurt with oats</column>
+			<column name="description">Any kind of yogurt</column>
+		</insert>
+		
+		<insert tableName="master_slots" schemaName="xantar">
+			<column name="name">BREAKFAST</column>
+		</insert>
+		<insert tableName="master_slots" schemaName="xantar">
+			<column name="name">SNACK1</column>
+		</insert>
+		<insert tableName="master_slots" schemaName="xantar">
+			<column name="name">LUNCH</column>
+		</insert>
+		<insert tableName="master_slots" schemaName="xantar">
+			<column name="name">SNACK2</column>
+		</insert>
+		<insert tableName="master_slots" schemaName="xantar">
+			<column name="name">DINNER</column>
+		</insert>
+		
+		<insert tableName="slots" schemaName="xantar">
+			<column name="meal_id">1</column>
+			<column name="slot_id">1</column>
+		</insert>
+		<insert tableName="slots" schemaName="xantar">
+			<column name="meal_id">1</column>
+			<column name="slot_id">2</column>
+		</insert>
+		<insert tableName="slots" schemaName="xantar">
+			<column name="meal_id">2</column>
+			<column name="slot_id">3</column>
+		</insert>
+		<insert tableName="slots" schemaName="xantar">
+			<column name="meal_id">3</column>
+			<column name="slot_id">4</column>
+		</insert>
+		<insert tableName="slots" schemaName="xantar">
+			<column name="meal_id">4</column>
+			<column name="slot_id">2</column>
+		</insert>
+		<insert tableName="slots" schemaName="xantar">
+			<column name="meal_id">4</column>
+			<column name="slot_id">4</column>
+		</insert>
+		<insert tableName="slots" schemaName="xantar">
+			<column name="meal_id">5</column>
+			<column name="slot_id">5</column>
+		</insert>
+		<insert tableName="slots" schemaName="xantar">
+			<column name="meal_id">6</column>
+			<column name="slot_id">1</column>
+		</insert>
+		<insert tableName="slots" schemaName="xantar">
+			<column name="meal_id">6</column>
+			<column name="slot_id">2</column>
+		</insert>
+		<insert tableName="slots" schemaName="xantar">
+			<column name="meal_id">6</column>
+			<column name="slot_id">4</column>
+		</insert>
+		<insert tableName="slots" schemaName="xantar">
+			<column name="meal_id">6</column>
+			<column name="slot_id">5</column>
+		</insert>
+		
+	</changeSet>
+	
+
+</databaseChangeLog>
