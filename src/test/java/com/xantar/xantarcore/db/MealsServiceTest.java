@@ -14,16 +14,16 @@ import com.xantar.xantarcore.models.Meal;
 public class MealsServiceTest {
 
 	MealsService mealsService;
-	IMealsRepository mealsRepository = Mockito.mock(IMealsRepository.class);
+	IMealsRepository mealsRepositoryMock = Mockito.mock(IMealsRepository.class);
 
 	@Test
 	void findAll_returnsNonEmtpyList() {
-		this.mealsService = new MealsService(this.mealsRepository);
-		Mockito.when(this.mealsRepository.findAll()).thenReturn(Collections.singletonList(Mockito.mock(EMeal.class)));
+		this.mealsService = new MealsService(this.mealsRepositoryMock);
+		Mockito.when(this.mealsRepositoryMock.findAll()).thenReturn(Collections.singletonList(Mockito.mock(EMeal.class)));
 
 		final List<Meal> mealsList = this.mealsService.findAll();
 
-		Mockito.verify(this.mealsRepository).findAll();
+		Mockito.verify(this.mealsRepositoryMock).findAll();
 		assertNotNull(mealsList);
 		assertEquals(1, mealsList.size());
 		assertEquals(Meal.class, mealsList.get(0).getClass());
