@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +21,7 @@ import com.xantar.xantarcore.models.Meal;
 @RequestMapping("/api/meals")
 public class MealsController {
 
-	Logger						LOGGER	= LoggerFactory.getLogger(MealsController.class);
+	Logger	LOGGER = LoggerFactory.getLogger(MealsController.class);
 
 	private final MealsService	mealsService;
 
@@ -33,18 +35,20 @@ public class MealsController {
 	}
 
 	@GetMapping()
-	public List<MealResponseJson> findAllMeals() {
-		return this.mealsService.findAll().stream()
+	public ResponseEntity<List<MealResponseJson>> findAllMeals() {
+		final List<MealResponseJson> list = this.mealsService.findAll().stream()
 				.map(meal -> MealResponseMapper.toJsonResponse(meal))
 				.collect(Collectors.toList());
+		return new ResponseEntity<List<MealResponseJson>>(list, HttpStatus.OK);
 	}
 
 	@PostMapping()
-	public MealResponseJson createMeal(@RequestBody MealResponseJson jMeal) {
+	public ResponseEntity<MealResponseJson> createMeal(@RequestBody MealResponseJson jMeal) {
 		final Meal mealModel = MealResponseMapper.toModel(jMeal);
 		final Meal createdMeal = this.mealsService.createMeal(mealModel);
+		final MealResponseJson responseJMeal = MealResponseMapper.toJsonResponse(createdMeal);
 
-		return MealResponseMapper.toJsonResponse(createdMeal);
+		return new ResponseEntity<MealResponseJson>(responseJMeal, HttpStatus.CREATED);
 	}
 
 }
