@@ -32,12 +32,12 @@ public class MealsService {
 				.collect(Collectors.toList());
 	}
 
-	public void createMeal(Meal meal) {
+	public Meal createMeal(Meal meal) {
 		final EMeal eMeal = EMealMapper.toEntity(meal);
 		if(eMeal == null) {
 			throw new IllegalArgumentException("Cannot insert null value as meal");
 		}
-		this.mealsRepository.save(eMeal);
+		return EMealMapper.toModel(this.mealsRepository.save(eMeal));
 	}
 
 }

@@ -9,13 +9,13 @@ import com.xantar.xantarcore.utils.Base64Utils;
 
 public class Meal {
 
-	public final int	id;
+	public final Integer	id;
 	public final String	name;
 	public final String	description;
 	public final List<Slot> slots;
 	public final byte[] imageThumb;
 
-	public Meal(int id, String name, String description, List<Slot> slots, byte[] imageThumb) {
+	public Meal(Integer id, String name, String description, List<Slot> slots, byte[] imageThumb) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -66,7 +66,7 @@ public class Meal {
 	}
 
 	private boolean compareAttributes(Meal meal) {
-		return this.id == meal.id
+		return Objects.equals(this.id, meal.id)
 				&& Objects.equals(this.name, meal.name)
 				&& Objects.equals(this.description, meal.description)
 				&& Objects.equals(this.slots, meal.slots)

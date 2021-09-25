@@ -10,14 +10,14 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public class MealResponseJson {
 
-	public final int	id;
+	public final Integer	id;
 	public final String	name;
 	public final String	description;
 	public final List<SlotResponseJson> slots;
 	public final String imageThumb;
 
 	@JsonCreator
-	public MealResponseJson(int id, String name, String description, List<SlotResponseJson> slots, String imageThumb) {
+	public MealResponseJson(Integer id, String name, String description, List<SlotResponseJson> slots, String imageThumb) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
