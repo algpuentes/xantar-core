@@ -13,7 +13,7 @@ import com.xantar.xantarcore.models.Meal;
 @Service
 public class MealsService {
 
-	Logger							LOGGER	= LoggerFactory.getLogger(MealsService.class);
+	private final Logger LOGGER	= LoggerFactory.getLogger(MealsService.class);
 
 	private final IMealsRepository	mealsRepository;
 
@@ -30,6 +30,14 @@ public class MealsService {
 		return this.mealsRepository.findAll().stream()
 				.map(eMeal -> EMealMapper.toModel(eMeal))
 				.collect(Collectors.toList());
+	}
+
+	public Meal createMeal(Meal meal) {
+		final EMeal eMeal = EMealMapper.toEntity(meal);
+		if(eMeal == null) {
+			throw new IllegalArgumentException("Cannot insert null value as meal");
+		}
+		return EMealMapper.toModel(this.mealsRepository.save(eMeal));
 	}
 
 }

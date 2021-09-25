@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -18,7 +20,8 @@ import org.hibernate.annotations.Type;
 public class EMeal {
 
 	@Id
-	int	id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Integer	id;
 	String	name;
 	String	description;
 	@Lob
