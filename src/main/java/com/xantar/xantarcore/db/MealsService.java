@@ -40,4 +40,11 @@ public class MealsService {
 		return EMealMapper.toModel(this.mealsRepository.save(eMeal));
 	}
 
+	public void deleteMeal(Integer mealId) {
+		if(mealId == null) {
+			throw new IllegalArgumentException("Cannot delete null id.");
+		}
+		this.mealsRepository.deleteById(mealId);
+	}
+
 }
