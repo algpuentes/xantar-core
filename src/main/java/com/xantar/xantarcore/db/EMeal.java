@@ -36,4 +36,52 @@ public class EMeal {
 
 	EMeal() {}
 
+	EMeal(EMealBuilder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.description = builder.description;
+		this.slots = builder.slots;
+		this.imageThumb = builder.imageThumb;
+	}
+
+
+	public static class EMealBuilder {
+		private Integer	id;
+		private String	name;
+		private String	description;
+		private Set<ESlot> slots;
+		private byte[] imageThumb;
+
+		public EMealBuilder() {}
+
+		public EMeal build() {
+			return new EMeal(this);
+		}
+
+		public EMealBuilder withId(Integer id) {
+			this.id = id;
+			return this;
+		}
+
+		public EMealBuilder withName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public EMealBuilder withDescription(String description) {
+			this.description = description;
+			return this;
+		}
+
+		public EMealBuilder withSlots(Set<ESlot> slots) {
+			this.slots = slots;
+			return this;
+		}
+
+		public EMealBuilder withImageThumb(byte[] imageThumb) {
+			this.imageThumb = imageThumb;
+			return this;
+		}
+
+	}
 }

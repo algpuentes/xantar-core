@@ -1,5 +1,7 @@
 package com.xantar.xantarcore.rest;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -24,7 +26,7 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
 				new HttpHeaders(), HttpStatus.CONFLICT, request);
 	}
 
-	@ExceptionHandler(value = { EmptyResultDataAccessException.class })
+	@ExceptionHandler(value = { EmptyResultDataAccessException.class, EntityNotFoundException.class })
 	protected ResponseEntity<Object> handleDataAccessError(RuntimeException ex, WebRequest request) {
 
 		return this.handleExceptionInternal(ex, MESSAGE_RESOURCE_NOT_FOUND,
