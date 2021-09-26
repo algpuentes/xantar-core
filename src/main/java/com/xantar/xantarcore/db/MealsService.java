@@ -42,29 +42,34 @@ public class MealsService {
 		return EMealMapper.toModel(this.mealsRepository.save(eMeal));
 	}
 
-	public Meal updateMeal(Meal updatedMeal) {
-		if(updatedMeal == null || updatedMeal.id == null) {
+	public Meal updateMeal(Meal updatedData) {
+		if(updatedData == null || updatedData.id == null) {
 			throw new IllegalArgumentException("Cannot update null value as meal");
 		}
-		final EMeal originalEMeal = this.mealsRepository.findById(updatedMeal.id)
-				.orElseThrow(() -> new EntityNotFoundException("Meal with id ''" + updatedMeal.id));
-		//TODO: check if update slots
-		return EMealMapper.toModel(this.mealsRepository.save(this.updateEntity(originalEMeal, EMealMapper.toEntity(updatedMeal))));
+
+		final EMeal originalEMeal = this.mealsRepository.findById(updatedData.id)
+				.orElseThrow(() -> new EntityNotFoundException("Meal with id ''" + updatedData.id));
+
+		final EMeal updateEMeal = this.updateEntity(originalEMeal, updatedData);
+
+		return EMealMapper.toModel(this.mealsRepository.save(updateEMeal));
 	}
 
 	/**
 	 * Updates just non null values
 	 * **/
-	private EMeal updateEntity(EMeal originalEMeal, EMeal updatedEMeal) {
+	private EMeal updateEntity(EMeal originalEMeal, Meal updatedData) {
 		final EMeal eMeal =  new EMeal.EMealBuilder()
 				.withId(originalEMeal.id)
-				.withName(updatedEMeal.name != null ? updatedEMeal.name : originalEMeal.name)
-				.withDescription(updatedEMeal.description  != null ? updatedEMeal.description : originalEMeal.description)
-				.withImageThumb(updatedEMeal.imageThumb != null ? updatedEMeal.imageThumb : originalEMeal.imageThumb)
+				.withName(updatedData.name != null ? updatedData.name : originalEMeal.name)
+				.withDescription(updatedData.description  != null ? updatedData.description : originalEMeal.description)
+				.withImageThumb(updatedData.imageThumb != null ? updatedData.imageThumb : originalEMeal.imageThumb)
 				.build();
-		if(updatedEMeal.slots != null) {
-			updatedEMeal.slots.stream().forEach((slot) -> { eMeal.addSlot(slot); });
+
+		if(updatedData.slots != null) {
+			updatedData.slots.stream().forEach((slot) -> { eMeal.addSlot(ESlotMapper.toEntity(slot)); });
 		}
+
 		return eMeal;
 	}
 
