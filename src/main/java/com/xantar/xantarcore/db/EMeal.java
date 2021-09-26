@@ -1,6 +1,8 @@
 package com.xantar.xantarcore.db;
 
 import java.util.HashSet;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -14,6 +16,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
+
+import com.xantar.xantarcore.models.Meal;
 
 @Entity
 @Table(name = "MEALS", schema = "XANTAR")
@@ -44,12 +48,43 @@ public class EMeal {
 		this.imageThumb = builder.imageThumb;
 	}
 
+	public void addSlot(ESlot slot) {
+		this.slots.add(slot);
+		slot.meals.add(this);
+	}
+
+	public void removeSlot(ESlot tag) {
+		this.slots.remove(tag);
+		tag.meals.remove(this);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.id, this.name, this.description, this.slots, this.imageThumb);
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		return Optional.ofNullable(other)
+				.filter(Meal.class::isInstance)
+				.map(Meal.class::cast)
+				.filter(object -> this.compareAttributes(object))
+				.isPresent();
+	}
+
+	private boolean compareAttributes(Meal meal) {
+		return Objects.equals(this.id, meal.id)
+				&& Objects.equals(this.name, meal.name)
+				&& Objects.equals(this.description, meal.description)
+				&& Objects.equals(this.slots, meal.slots)
+				&& Objects.equals(this.imageThumb, meal.imageThumb);
+	}
 
 	public static class EMealBuilder {
 		private Integer	id;
 		private String	name;
 		private String	description;
-		private Set<ESlot> slots;
+		private Set<ESlot> slots = new HashSet<>();
 		private byte[] imageThumb;
 
 		public EMealBuilder() {}
@@ -84,4 +119,6 @@ public class EMeal {
 		}
 
 	}
+
+
 }

@@ -40,6 +40,14 @@ public class Meal {
 				.isPresent();
 	}
 
+	private boolean compareAttributes(Meal meal) {
+		return Objects.equals(this.id, meal.id)
+				&& Objects.equals(this.name, meal.name)
+				&& Objects.equals(this.description, meal.description)
+				&& Objects.equals(this.slots, meal.slots)
+				&& Objects.equals(this.imageThumb, meal.imageThumb);
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(this.id, this.name, this.description, this.slots, this.imageThumb);
@@ -71,14 +79,6 @@ public class Meal {
 		sb.append("}");
 
 		return sb.toString();
-	}
-
-	private boolean compareAttributes(Meal meal) {
-		return Objects.equals(this.id, meal.id)
-				&& Objects.equals(this.name, meal.name)
-				&& Objects.equals(this.description, meal.description)
-				&& Objects.equals(this.slots, meal.slots)
-				&& Objects.equals(this.imageThumb, meal.imageThumb);
 	}
 
 	public static class MealBuilder {

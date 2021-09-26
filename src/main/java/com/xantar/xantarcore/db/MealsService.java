@@ -48,7 +48,7 @@ public class MealsService {
 		}
 		final EMeal originalEMeal = this.mealsRepository.findById(updatedMeal.id)
 				.orElseThrow(() -> new EntityNotFoundException("Meal with id ''" + updatedMeal.id));
-
+		//TODO: check if update slots
 		return EMealMapper.toModel(this.mealsRepository.save(this.updateEntity(originalEMeal, EMealMapper.toEntity(updatedMeal))));
 	}
 
@@ -56,13 +56,16 @@ public class MealsService {
 	 * Updates just non null values
 	 * **/
 	private EMeal updateEntity(EMeal originalEMeal, EMeal updatedEMeal) {
-		return new EMeal.EMealBuilder()
+		final EMeal eMeal =  new EMeal.EMealBuilder()
 				.withId(originalEMeal.id)
 				.withName(updatedEMeal.name != null ? updatedEMeal.name : originalEMeal.name)
 				.withDescription(updatedEMeal.description  != null ? updatedEMeal.description : originalEMeal.description)
-				.withSlots(updatedEMeal.slots != null ? updatedEMeal.slots : originalEMeal.slots)
 				.withImageThumb(updatedEMeal.imageThumb != null ? updatedEMeal.imageThumb : originalEMeal.imageThumb)
 				.build();
+		if(updatedEMeal.slots != null) {
+			updatedEMeal.slots.stream().forEach((slot) -> { eMeal.addSlot(slot); });
+		}
+		return eMeal;
 	}
 
 	public void deleteMeal(Integer mealId) {
