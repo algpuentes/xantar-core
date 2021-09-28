@@ -17,8 +17,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
-import com.xantar.xantarcore.models.Meal;
-
 @Entity
 @Table(name = "MEALS", schema = "XANTAR")
 public class EMeal {
@@ -48,14 +46,14 @@ public class EMeal {
 		this.imageThumb = builder.imageThumb;
 	}
 
-	public void addSlot(ESlot slot) {
-		this.slots.add(slot);
-		slot.meals.add(this);
+	public void addSlot(ESlot eSlot) {
+		this.slots.add(eSlot);
+		eSlot.meals.add(this);
 	}
 
-	public void removeSlot(ESlot tag) {
-		this.slots.remove(tag);
-		tag.meals.remove(this);
+	public void removeSlot(ESlot eSlot) {
+		this.slots.remove(eSlot);
+		eSlot.meals.remove(this);
 	}
 
 	@Override
@@ -66,18 +64,18 @@ public class EMeal {
 	@Override
 	public boolean equals(Object other) {
 		return Optional.ofNullable(other)
-				.filter(Meal.class::isInstance)
-				.map(Meal.class::cast)
+				.filter(EMeal.class::isInstance)
+				.map(EMeal.class::cast)
 				.filter(object -> this.compareAttributes(object))
 				.isPresent();
 	}
 
-	private boolean compareAttributes(Meal meal) {
-		return Objects.equals(this.id, meal.id)
-				&& Objects.equals(this.name, meal.name)
-				&& Objects.equals(this.description, meal.description)
-				&& Objects.equals(this.slots, meal.slots)
-				&& Objects.equals(this.imageThumb, meal.imageThumb);
+	private boolean compareAttributes(EMeal eMeal) {
+		return Objects.equals(this.id, eMeal.id)
+				&& Objects.equals(this.name, eMeal.name)
+				&& Objects.equals(this.description, eMeal.description)
+				&& Objects.equals(this.slots, eMeal.slots)
+				&& Objects.equals(this.imageThumb, eMeal.imageThumb);
 	}
 
 	public static class EMealBuilder {

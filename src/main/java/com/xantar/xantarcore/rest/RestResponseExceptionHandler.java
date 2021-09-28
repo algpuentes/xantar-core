@@ -18,6 +18,7 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
 
 	private static final String MESSAGE_DATA_INTEGRITY_VIOLATION = "Data integrity violation.";
 	private static final String MESSAGE_RESOURCE_NOT_FOUND = "Resource not found.";
+	private static final String MESSAGE_ILLEGAL_ARGUMENT = "Illegal argument error. ";
 
 	@ExceptionHandler(value = { ConstraintViolationException.class, DataIntegrityViolationException.class })
 	protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
@@ -32,4 +33,13 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
 		return this.handleExceptionInternal(ex, MESSAGE_RESOURCE_NOT_FOUND,
 				new HttpHeaders(), HttpStatus.NOT_FOUND, request);
 	}
+
+	@ExceptionHandler(value = { IllegalArgumentException.class })
+	protected ResponseEntity<Object> handleIllegalArgumentError(RuntimeException ex, WebRequest request) {
+
+		return this.handleExceptionInternal(ex, MESSAGE_ILLEGAL_ARGUMENT + ex.getMessage(),
+				new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+	}
+
+
 }

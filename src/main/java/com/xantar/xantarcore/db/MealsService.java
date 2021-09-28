@@ -44,6 +44,9 @@ public class MealsService {
 		if(eMeal == null) {
 			throw new IllegalArgumentException("Cannot insert null value as meal");
 		}
+		if(eMeal.name == null || eMeal.name.isBlank()) {
+			throw new IllegalArgumentException("Cannot insert empty value as name");
+		}
 		return EMealMapper.toModel(this.mealsRepository.save(eMeal));
 	}
 
@@ -64,9 +67,13 @@ public class MealsService {
 	 * Updates just non null values
 	 * **/
 	private EMeal updateEntity(EMeal originalEMeal, Meal updatedData) {
+		if(updatedData.name != null && updatedData.name.isBlank()) {
+			throw new IllegalArgumentException("Cannot insert empty value as name");
+		}
+
 		final EMeal eMeal =  new EMeal.EMealBuilder()
 				.withId(originalEMeal.id)
-				.withName(updatedData.name != null ? updatedData.name : originalEMeal.name)
+				.withName(updatedData.name != null && !updatedData.name.isBlank() ? updatedData.name : originalEMeal.name)
 				.withDescription(updatedData.description  != null ? updatedData.description : originalEMeal.description)
 				.withImageThumb(updatedData.imageThumb != null ? updatedData.imageThumb : originalEMeal.imageThumb)
 				.build();

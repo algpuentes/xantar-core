@@ -10,8 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import com.xantar.xantarcore.models.Slot;
-
 @Entity
 @Table(name = "MASTER_SLOTS", schema = "XANTAR")
 public class ESlot {
@@ -25,28 +23,28 @@ public class ESlot {
 
 	ESlot() {}
 
-	public void addSlot(EMeal meal) {
-		this.meals.add(meal);
-		meal.slots.add(this);
+	public void addSlot(EMeal eMeal) {
+		this.meals.add(eMeal);
+		eMeal.slots.add(this);
 	}
 
-	public void removeSlot(EMeal meal) {
-		this.meals.remove(meal);
-		meal.slots.remove(this);
+	public void removeSlot(EMeal eMeal) {
+		this.meals.remove(eMeal);
+		eMeal.slots.remove(this);
 	}
 
 	@Override
 	public boolean equals(Object other) {
 		return Optional.ofNullable(other)
-				.filter(Slot.class::isInstance)
-				.map(Slot.class::cast)
+				.filter(ESlot.class::isInstance)
+				.map(ESlot.class::cast)
 				.filter(object -> this.compareAttributes(object))
 				.isPresent();
 	}
 
-	private boolean compareAttributes(Slot slot) {
-		return this.id == slot.id
-				&& Objects.equals(this.name, slot.name);
+	private boolean compareAttributes(ESlot eSlot) {
+		return this.id == eSlot.id
+				&& Objects.equals(this.name, eSlot.name);
 	}
 
 	@Override
