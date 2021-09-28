@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +37,12 @@ public class MealsController {
 		this.mealsService = mealsService;
 	}
 
+	@GetMapping("/{mealId}")
+	public ResponseEntity<MealResponseJson> findMeal(@PathVariable("mealId") Integer mealId) {
+		final MealResponseJson jMeal = MealResponseMapper.toJsonResponse(this.mealsService.findById(mealId));
+		return new ResponseEntity<MealResponseJson>(jMeal, HttpStatus.OK);
+	}
+
 	@GetMapping()
 	public ResponseEntity<List<MealResponseJson>> findAllMeals() {
 		final List<MealResponseJson> list = this.mealsService.findAll().stream()
@@ -51,6 +58,21 @@ public class MealsController {
 		final MealResponseJson responseJMeal = MealResponseMapper.toJsonResponse(createdMeal);
 
 		return new ResponseEntity<MealResponseJson>(responseJMeal, HttpStatus.CREATED);
+	}
+
+	@PatchMapping("/{mealId}")
+	public ResponseEntity<MealResponseJson> updateMeal(@PathVariable("mealId") Integer mealId, @RequestBody MealResponseJson data) {
+		final MealResponseJson jMeal = new MealResponseJson.Builder().withId(mealId)
+				.withName(data.name)
+				.withDescription(data.description)
+				.withSlots(data.slots)
+				.withImageThumb(data.imageThumb)
+				.build();
+		final Meal mealModel = MealResponseMapper.toModel(jMeal);
+		final Meal createdMeal = this.mealsService.updateMeal(mealModel);
+		final MealResponseJson responseJMeal = MealResponseMapper.toJsonResponse(createdMeal);
+
+		return new ResponseEntity<MealResponseJson>(responseJMeal, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{mealId}")

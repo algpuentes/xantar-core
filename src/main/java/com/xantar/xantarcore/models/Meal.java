@@ -23,6 +23,14 @@ public class Meal {
 		this.imageThumb = imageThumb;
 	}
 
+	public Meal(MealBuilder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.description = builder.description;
+		this.slots = builder.slots;
+		this.imageThumb = builder.imageThumb;
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		return Optional.ofNullable(other)
@@ -30,6 +38,14 @@ public class Meal {
 				.map(Meal.class::cast)
 				.filter(object -> this.compareAttributes(object))
 				.isPresent();
+	}
+
+	private boolean compareAttributes(Meal meal) {
+		return Objects.equals(this.id, meal.id)
+				&& Objects.equals(this.name, meal.name)
+				&& Objects.equals(this.description, meal.description)
+				&& Objects.equals(this.slots, meal.slots)
+				&& Objects.equals(this.imageThumb, meal.imageThumb);
 	}
 
 	@Override
@@ -65,12 +81,44 @@ public class Meal {
 		return sb.toString();
 	}
 
-	private boolean compareAttributes(Meal meal) {
-		return Objects.equals(this.id, meal.id)
-				&& Objects.equals(this.name, meal.name)
-				&& Objects.equals(this.description, meal.description)
-				&& Objects.equals(this.slots, meal.slots)
-				&& Objects.equals(this.imageThumb, meal.imageThumb);
+	public static class MealBuilder {
+		private Integer	id;
+		private String	name;
+		private String	description;
+		private List<Slot> slots;
+		private byte[] imageThumb;
+
+		public MealBuilder() {}
+
+		public Meal build() {
+			return new Meal(this);
+		}
+
+		public MealBuilder withId(Integer id) {
+			this.id = id;
+			return this;
+		}
+
+		public MealBuilder withName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public MealBuilder withDescription(String description) {
+			this.description = description;
+			return this;
+		}
+
+		public MealBuilder withSlots(List<Slot> slots) {
+			this.slots = slots;
+			return this;
+		}
+
+		public MealBuilder withImageThumb(byte[] imageThumb) {
+			this.imageThumb = imageThumb;
+			return this;
+		}
+
 	}
 
 }

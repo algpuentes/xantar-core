@@ -3,6 +3,8 @@ package com.xantar.xantarcore.db;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,11 @@ public class MealsService {
 		this.mealsRepository = mealsRepository;
 	}
 
+	public Meal findById(Integer id) {
+		return EMealMapper.toModel(this.mealsRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Meal with id ''" + id + " not found.")));
+	}
+
 	public List<Meal> findAll() {
 		return this.mealsRepository.findAll().stream()
 				.map(eMeal -> EMealMapper.toModel(eMeal))
@@ -37,7 +44,45 @@ public class MealsService {
 		if(eMeal == null) {
 			throw new IllegalArgumentException("Cannot insert null value as meal");
 		}
+		if(eMeal.name == null || eMeal.name.isBlank()) {
+			throw new IllegalArgumentException("Cannot insert empty value as name");
+		}
 		return EMealMapper.toModel(this.mealsRepository.save(eMeal));
+	}
+
+	public Meal updateMeal(Meal updatedData) {
+		if(updatedData == null || updatedData.id == null) {
+			throw new IllegalArgumentException("Cannot update null value as meal");
+		}
+
+		final EMeal originalEMeal = this.mealsRepository.findById(updatedData.id)
+				.orElseThrow(() -> new EntityNotFoundException("Meal with id ''" + updatedData.id + " not found."));
+
+		final EMeal updateEMeal = this.updateEntity(originalEMeal, updatedData);
+
+		return EMealMapper.toModel(this.mealsRepository.save(updateEMeal));
+	}
+
+	/**
+	 * Updates just non null values
+	 * **/
+	private EMeal updateEntity(EMeal originalEMeal, Meal updatedData) {
+		if(updatedData.name != null && updatedData.name.isBlank()) {
+			throw new IllegalArgumentException("Cannot insert empty value as name");
+		}
+
+		final EMeal eMeal =  new EMeal.EMealBuilder()
+				.withId(originalEMeal.id)
+				.withName(updatedData.name != null && !updatedData.name.isBlank() ? updatedData.name : originalEMeal.name)
+				.withDescription(updatedData.description  != null ? updatedData.description : originalEMeal.description)
+				.withImageThumb(updatedData.imageThumb != null ? updatedData.imageThumb : originalEMeal.imageThumb)
+				.build();
+
+		if(updatedData.slots != null) {
+			updatedData.slots.stream().forEach((slot) -> { eMeal.addSlot(ESlotMapper.toEntity(slot)); });
+		}
+
+		return eMeal;
 	}
 
 	public void deleteMeal(Integer mealId) {

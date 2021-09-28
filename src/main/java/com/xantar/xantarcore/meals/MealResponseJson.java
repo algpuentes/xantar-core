@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MealResponseJson {
 
 	public final Integer	id;
@@ -23,6 +25,14 @@ public class MealResponseJson {
 		this.description = description;
 		this.slots = slots;
 		this.imageThumb = imageThumb;
+	}
+
+	public MealResponseJson(Builder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.description = builder.description;
+		this.slots = builder.slots;
+		this.imageThumb = builder.imageThumb;
 	}
 
 	@Override
@@ -53,5 +63,45 @@ public class MealResponseJson {
 		sb.append("]");
 
 		return sb.toString();
+	}
+
+	public static class Builder {
+		private Integer	id;
+		private String	name;
+		private String	description;
+		private List<SlotResponseJson> slots;
+		private String imageThumb;
+
+		public Builder() {}
+
+		public MealResponseJson build() {
+			return new MealResponseJson(this);
+		}
+
+		public Builder withId(Integer id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder withName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder withDescription(String description) {
+			this.description = description;
+			return this;
+		}
+
+		public Builder withSlots(List<SlotResponseJson> slots) {
+			this.slots = slots;
+			return this;
+		}
+
+		public Builder withImageThumb(String imageThumb) {
+			this.imageThumb = imageThumb;
+			return this;
+		}
+
 	}
 }
