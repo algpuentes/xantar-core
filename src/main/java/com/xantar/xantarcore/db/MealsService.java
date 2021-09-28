@@ -28,6 +28,11 @@ public class MealsService {
 		this.mealsRepository = mealsRepository;
 	}
 
+	public Meal findById(Integer id) {
+		return EMealMapper.toModel(this.mealsRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Meal with id ''" + id + " not found.")));
+	}
+
 	public List<Meal> findAll() {
 		return this.mealsRepository.findAll().stream()
 				.map(eMeal -> EMealMapper.toModel(eMeal))
@@ -48,7 +53,7 @@ public class MealsService {
 		}
 
 		final EMeal originalEMeal = this.mealsRepository.findById(updatedData.id)
-				.orElseThrow(() -> new EntityNotFoundException("Meal with id ''" + updatedData.id));
+				.orElseThrow(() -> new EntityNotFoundException("Meal with id ''" + updatedData.id + " not found."));
 
 		final EMeal updateEMeal = this.updateEntity(originalEMeal, updatedData);
 

@@ -37,6 +37,12 @@ public class MealsController {
 		this.mealsService = mealsService;
 	}
 
+	@GetMapping("/{mealId}")
+	public ResponseEntity<MealResponseJson> findMeal(@PathVariable("mealId") Integer mealId) {
+		final MealResponseJson jMeal = MealResponseMapper.toJsonResponse(this.mealsService.findById(mealId));
+		return new ResponseEntity<MealResponseJson>(jMeal, HttpStatus.OK);
+	}
+
 	@GetMapping()
 	public ResponseEntity<List<MealResponseJson>> findAllMeals() {
 		final List<MealResponseJson> list = this.mealsService.findAll().stream()
