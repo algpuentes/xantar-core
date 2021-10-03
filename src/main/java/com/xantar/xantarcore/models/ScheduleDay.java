@@ -1,6 +1,5 @@
 package com.xantar.xantarcore.models;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -9,10 +8,10 @@ import java.util.stream.Collectors;
 public class ScheduleDay {
 
 	public final Integer id;
-	public final Timestamp timestamp;
+	public final Long timestamp;
 	public final List<ScheduleConfiguration> configurations;
 
-	public ScheduleDay(Integer id, Timestamp timestamp, List<ScheduleConfiguration> configurations) {
+	public ScheduleDay(Integer id, Long timestamp, List<ScheduleConfiguration> configurations) {
 		this.id = id;
 		this.timestamp = timestamp;
 		this.configurations = configurations;
