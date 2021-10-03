@@ -60,7 +60,7 @@ public class EMealMapperTest {
 		final var meal = EMealMapper.toModel(eMeal);
 
 		assertNotNull(meal, "Meal should not be null");
-		assertEquals(meal.id, 0, "Id should be 0");
+		assertNull(meal.id, "Id should be null");
 		assertNull(meal.name, "Name should be null");
 		assertNull(meal.description, "Description should be null");
 		assertNotNull(meal.slots, "Slots should not be null");
@@ -90,12 +90,12 @@ public class EMealMapperTest {
 		final var eMeal = EMealMapper.toEntity(meal);
 
 		assertNotNull(eMeal, "EMeal should not be null");
-		assertEquals(eMeal.id, meal.id, "Id should be the same");
-		assertEquals(eMeal.name, meal.name, "Name should be the same");
-		assertEquals(eMeal.description, meal.description, "Description should be the same");
-		assertNotNull(eMeal.slots, "Slots should not be null");
-		assertEquals(eMeal.slots.size(), meal.slots.size(), "Slots list size should be the same");
-		assertEquals(eMeal.imageThumb, meal.imageThumb, "Image should be the same");
+		assertEquals(meal.id, eMeal.id, "Id should be the same");
+		assertEquals(meal.name, eMeal.name, "Name should be the same");
+		assertEquals(meal.description, eMeal.description, "Description should be the same");
+		assertNotNull(meal.slots, "Slots should not be null");
+		assertEquals(meal.slots.size(), eMeal.slots.size(), "Slots list size should be the same");
+		assertEquals(meal.imageThumb, eMeal.imageThumb, "Image should be the same");
 	}
 
 	@Test
@@ -108,7 +108,7 @@ public class EMealMapperTest {
 		assertEquals(eMeal.id, 0, "Id should be 0");
 		assertNull(eMeal.name, "Name should be null");
 		assertNull(eMeal.description, "Description should be null");
-		assertNull(eMeal.slots, "Slots should be null");
+		assertTrue(eMeal.slots.isEmpty(), "Slots should be empty");
 		assertNull(eMeal.imageThumb, "Image should be null");
 	}
 

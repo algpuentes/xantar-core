@@ -30,9 +30,9 @@ public class Slot {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		sb.append("[");
+		sb.append("{");
 		sb.append("id=" + this.id + ", ");
-		sb.append("name=" + this.name + "]");
+		sb.append("name=" + this.name + "}");
 
 		return sb.toString();
 	}
