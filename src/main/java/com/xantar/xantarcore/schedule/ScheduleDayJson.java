@@ -1,14 +1,10 @@
 package com.xantar.xantarcore.schedule;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import com.xantar.xantarcore.meals.MealResponseJson;
-import com.xantar.xantarcore.meals.SlotResponseJson;
 
 public class ScheduleDayJson {
 
@@ -77,10 +73,4 @@ public class ScheduleDayJson {
 		return Objects.hash(this.id, this.timestamp, this.configurations);
 	}
 
-	public static void main(String[] args) {
-		final var config = new ScheduleConfigurationJson(new SlotResponseJson(0, "slot"), new MealResponseJson(1, "meal", "description", Collections.singletonList(new SlotResponseJson(0, "slot")), "image"));
-		final var day = new ScheduleDayJson(1, System.currentTimeMillis(), Collections.singletonList(config));
-		System.out.println(config.toString());
-		System.out.println(day.toString());
-	}
 }
