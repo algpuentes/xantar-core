@@ -1,5 +1,6 @@
 package com.xantar.xantarcore.meals;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,7 @@ public class MealResponseMapper {
 			return null;
 		}
 
-		final List<Slot> slots = jMeal.slots == null ? null : jMeal.slots.stream().map(slot -> SlotResponseMapper.toModel(slot)).collect(Collectors.toList());
+		final List<Slot> slots = jMeal.slots == null ? new ArrayList<Slot>() : jMeal.slots.stream().map(slot -> SlotResponseMapper.toModel(slot)).collect(Collectors.toList());
 		final byte[] imageBytes = Base64Utils.decodeImage(jMeal.imageThumb);
 
 		return new Meal(jMeal.id, jMeal.name, jMeal.description, slots, imageBytes);
@@ -25,7 +26,7 @@ public class MealResponseMapper {
 			return null;
 		}
 
-		final List<SlotResponseJson> slots = meal.slots == null ? null : meal.slots.stream().map(slot -> SlotResponseMapper.toJsonResponse(slot)).collect(Collectors.toList());
+		final List<SlotResponseJson> slots = meal.slots == null ? new ArrayList<SlotResponseJson>() : meal.slots.stream().map(slot -> SlotResponseMapper.toJsonResponse(slot)).collect(Collectors.toList());
 		final String base64Image = Base64Utils.encodeImage(meal.imageThumb);
 
 		return new MealResponseJson(meal.id, meal.name, meal.description, slots, base64Image);

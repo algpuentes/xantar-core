@@ -1,6 +1,8 @@
 package com.xantar.xantarcore.db;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -34,7 +36,9 @@ public class MealsService {
 	}
 
 	public List<Meal> findAll() {
-		return this.mealsRepository.findAll().stream()
+		return Optional.ofNullable(this.mealsRepository.findAll())
+				.orElse(new ArrayList<EMeal>())
+				.stream()
 				.map(eMeal -> EMealMapper.toModel(eMeal))
 				.collect(Collectors.toList());
 	}
@@ -73,22 +77,21 @@ public class MealsService {
 
 		final EMeal eMeal =  new EMeal.EMealBuilder()
 				.withId(originalEMeal.id)
-				.withName(updatedData.name != null && !updatedData.name.isBlank() ? updatedData.name : originalEMeal.name)
+				.withName(updatedData.name != null ? updatedData.name : originalEMeal.name)
 				.withDescription(updatedData.description  != null ? updatedData.description : originalEMeal.description)
 				.withImageThumb(updatedData.imageThumb != null ? updatedData.imageThumb : originalEMeal.imageThumb)
 				.build();
 
 		if(updatedData.slots != null) {
 			updatedData.slots.stream().forEach((slot) -> { eMeal.addSlot(ESlotMapper.toEntity(slot)); });
+		} else {
+			originalEMeal.slots.stream().forEach((slot) -> { eMeal.addSlot(slot); });
 		}
 
 		return eMeal;
 	}
 
-	public void deleteMeal(Integer mealId) {
-		if(mealId == null) {
-			throw new IllegalArgumentException("Cannot delete null id.");
-		}
+	public void deleteMeal(int mealId) {
 		this.mealsRepository.deleteById(mealId);
 	}
 

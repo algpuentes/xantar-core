@@ -76,7 +76,7 @@ public class MealsController {
 	}
 
 	@DeleteMapping("/{mealId}")
-	public ResponseEntity deleteMeal(@PathVariable("mealId") Integer mealId) {
+	public ResponseEntity deleteMeal(@PathVariable("mealId") int mealId) {
 		this.mealsService.deleteMeal(mealId);
 		return new ResponseEntity(HttpStatus.OK);
 	}

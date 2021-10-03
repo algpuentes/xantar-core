@@ -1,5 +1,6 @@
 package com.xantar.xantarcore.db;
 
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 import com.xantar.xantarcore.models.Meal;
@@ -30,11 +31,10 @@ public class EMealMapper {
 		eMeal.name = meal.name;
 		eMeal.description = meal.description;
 
-		final var eSlots =
-				meal.slots == null ? null :
-					meal.slots.stream()
-					.map(slot -> ESlotMapper.toEntity(slot))
-					.collect(Collectors.toSet());
+		final var eSlots = new HashSet<ESlot>();
+		if(meal.slots != null) {
+			meal.slots.forEach(slot -> eSlots.add(ESlotMapper.toEntity(slot)));
+		}
 		eMeal.slots = eSlots;
 		eMeal.imageThumb = meal.imageThumb;
 

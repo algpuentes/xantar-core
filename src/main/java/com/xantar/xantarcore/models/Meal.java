@@ -5,8 +5,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.xantar.xantarcore.utils.Base64Utils;
-
 public class Meal {
 
 	public final Integer	id;
@@ -56,13 +54,12 @@ public class Meal {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		sb.append("[");
+		sb.append("{");
 		sb.append("id=" + this.id + ", ");
 		sb.append("name=" + this.name + ", ");
 		sb.append("description=" + this.description + ", ");
-		sb.append("slots=" + this.slotsListToString() + ", ");
-		sb.append(Base64Utils.encodeImage(this.imageThumb));
-		sb.append("]");
+		sb.append("slots=" + this.slotsListToString());
+		sb.append("}");
 
 		return sb.toString();
 	}
@@ -70,13 +67,13 @@ public class Meal {
 	private String slotsListToString() {
 		final StringBuilder sb = new StringBuilder();
 
-		sb.append("{");
+		sb.append("[");
 		if(this.slots != null) {
 			sb.append(this.slots.stream()
 					.map(slot -> slot.toString())
-					.collect(Collectors.joining(",")));
+					.collect(Collectors.joining(", ")));
 		}
-		sb.append("}");
+		sb.append("]");
 
 		return sb.toString();
 	}

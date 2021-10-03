@@ -1,5 +1,6 @@
 package com.xantar.xantarcore.db;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
@@ -52,8 +53,8 @@ public class EMeal {
 	}
 
 	public void removeSlot(ESlot eSlot) {
-		this.slots.remove(eSlot);
 		eSlot.meals.remove(this);
+		this.slots.remove(eSlot);
 	}
 
 	@Override
@@ -75,7 +76,7 @@ public class EMeal {
 				&& Objects.equals(this.name, eMeal.name)
 				&& Objects.equals(this.description, eMeal.description)
 				&& Objects.equals(this.slots, eMeal.slots)
-				&& Objects.equals(this.imageThumb, eMeal.imageThumb);
+				&& Arrays.equals(this.imageThumb, eMeal.imageThumb);
 	}
 
 	public static class EMealBuilder {

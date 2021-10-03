@@ -23,12 +23,12 @@ public class ESlot {
 
 	ESlot() {}
 
-	public void addSlot(EMeal eMeal) {
-		this.meals.add(eMeal);
+	public void addMeal(EMeal eMeal) {
 		eMeal.slots.add(this);
+		this.meals.add(eMeal);
 	}
 
-	public void removeSlot(EMeal eMeal) {
+	public void removeMeal(EMeal eMeal) {
 		this.meals.remove(eMeal);
 		eMeal.slots.remove(this);
 	}

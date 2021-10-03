@@ -1,7 +1,12 @@
 package com.xantar.xantarcore.meals;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.apache.tomcat.util.buf.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -37,15 +42,26 @@ public class MealResponseJson {
 
 	@Override
 	public String toString() {
+		final var list = new ArrayList<String>();
+
 		final StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		sb.append("\"id\":" + this.id + ",");
-		sb.append("\"name\":\"" + this.name + "\",");
-		sb.append("\"description\":\"" + this.description + "\",");
-		sb.append("\"slots\":");
-		sb.append(this.slotsListToString(this.slots));
-		sb.append(",");
-		sb.append("\"imageThumb\":\"" + this.imageThumb + "\"");
+		if(this.id != null) {
+			list.add("\"id\":" + this.id);
+		}
+		if(this.name != null) {
+			list.add("\"name\":\"" + this.name + "\"");
+		}
+		if(this.description != null) {
+			list.add("\"description\":\"" + this.description + "\"");
+		}
+		if(this.slots != null) {
+			list.add("\"slots\":" + this.slotsListToString(this.slots));
+		}
+		if(this.imageThumb != null) {
+			list.add("\"imageThumb\":\"" + this.imageThumb + "\"");
+		}
+		sb.append(StringUtils.join(list, ','));
 		sb.append("}");
 
 		return sb.toString();
@@ -64,6 +80,29 @@ public class MealResponseJson {
 
 		return sb.toString();
 	}
+
+	@Override
+	public boolean equals(Object other) {
+		return Optional.ofNullable(other)
+				.filter(MealResponseJson.class::isInstance)
+				.map(MealResponseJson.class::cast)
+				.filter(object -> this.compareAttributes(object))
+				.isPresent();
+	}
+
+	private boolean compareAttributes(MealResponseJson meal) {
+		return Objects.equals(this.id, meal.id)
+				&& Objects.equals(this.name, meal.name)
+				&& Objects.equals(this.description, meal.description)
+				&& Objects.equals(this.slots, meal.slots)
+				&& Objects.equals(this.imageThumb, meal.imageThumb);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.id, this.name, this.description, this.slots, this.imageThumb);
+	}
+
 
 	public static class Builder {
 		private Integer	id;
