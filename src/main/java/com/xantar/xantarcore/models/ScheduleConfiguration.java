@@ -6,12 +6,16 @@ import java.util.Optional;
 public class ScheduleConfiguration {
 
 	public final Slot slot;
-	public final Meal meal;
+	public Meal meal;
 
 
 	public ScheduleConfiguration(Slot slot, Meal meal) {
 		this.slot = slot;
 		this.meal = meal;
+	}
+
+	public Integer retrieveSlotId() {
+		return Optional.ofNullable(this.slot.id).orElse(null);
 	}
 
 	@Override
