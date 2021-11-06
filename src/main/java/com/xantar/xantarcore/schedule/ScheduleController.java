@@ -34,7 +34,7 @@ public class ScheduleController {
 
 
 	@PostMapping()
-	public ResponseEntity<ScheduleJson> createMeal(@RequestBody List<ScheduleDayJson> jDayList) {
+	public ResponseEntity<ScheduleJson> createSchedule(@RequestBody List<ScheduleDayJson> jDayList) {
 		final var scheduleList = this.scheduleService.generateSchedule(jDayList.stream().map((day) -> ScheduleDayJsonMapper.toModel(day)).collect(Collectors.toList()));
 		final var resultList = scheduleList.stream().map(day -> ScheduleDayJsonMapper.toJson(day)).collect(Collectors.toList());
 		final var schedule = new ScheduleJson(resultList);
