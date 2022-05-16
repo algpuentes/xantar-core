@@ -4,7 +4,7 @@
 
 	<changeSet author="guerreal" id="create meals table">
 		<createTable tableName="meals" schemaName="xantar">
-			<column name="id" type="BIGSERIAL" autoIncrement="true">
+			<column name="id" type="SERIAL" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
 			<column name="name" type="VARCHAR(255)">
@@ -21,7 +21,7 @@
 
 	<changeSet author="guerreal" id="create slots tables">
 		<createTable tableName="master_slots" schemaName="xantar">
-			<column name="id" type="SMALLSERIAL" autoIncrement="true">
+			<column name="id" type="SERIAL" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
 			<column name="name" type="VARCHAR(100)">
@@ -30,7 +30,7 @@
 		</createTable>
 
 		<createTable tableName="slots" schemaName="xantar">
-			<column name="id" type="BIGSERIAL" autoIncrement="true">
+			<column name="id" type="SERIAL" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
 			<column name="meal_id" type="int">
