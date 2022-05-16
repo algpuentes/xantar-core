@@ -34,13 +34,13 @@ public class ScheduleController {
 
 
 	@PostMapping()
-	public ResponseEntity<List<ScheduleDayJson>> createMeal(@RequestBody List<ScheduleDayJson> jScheduleRequest) {
+	public ResponseEntity<GetScheduleResponseJson> createMeal(@RequestBody List<ScheduleDayJson> jScheduleRequest) {
 		final var scheduleList = jScheduleRequest.stream().map(ScheduleDayJson::toScheduleDay).collect(Collectors.toList());
 		final List<ScheduleDayJson> jSchedule = this.scheduleService.generateSchedule(scheduleList)
-				.stream().map(day -> new ScheduleDayJson(day))
+				.stream().map(ScheduleDayJson::new)
 				.collect(Collectors.toList());
 
-		return new ResponseEntity<List<ScheduleDayJson>>(jSchedule, HttpStatus.CREATED);
+		return new ResponseEntity<>(new GetScheduleResponseJson(jSchedule), HttpStatus.CREATED);
 	}
 
 }
