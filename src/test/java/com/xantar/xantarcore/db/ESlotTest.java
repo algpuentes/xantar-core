@@ -1,8 +1,6 @@
 package com.xantar.xantarcore.db;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -56,37 +54,6 @@ public class ESlotTest {
 
 		assertTrue(eMeal.slots.isEmpty());
 		assertFalse(eMeal.slots.contains(eSlot));
-	}
-
-	/*
-	 * hashCode() && equals(Object)
-	 * */
-	@Test
-	void hashCode_withSameAttributes_equal() {
-		final var eSlot1 = new ESlot();
-		eSlot1.id = VALUE_ID;
-		eSlot1.name = VALUE_NAME;
-
-		final var eSlot2 = new ESlot();
-		eSlot2.id = VALUE_ID;
-		eSlot2.name = VALUE_NAME;
-
-		assertTrue(eSlot1.equals(eSlot2) && eSlot2.equals(eSlot1));
-		assertEquals(eSlot1.hashCode(),  eSlot2.hashCode());
-	}
-
-	@Test
-	void hashCode_withDifferentAttributes_notEqual() {
-		final var eSlot1 = new ESlot();
-		eSlot1.id = VALUE_ID;
-		eSlot1.name = VALUE_NAME;
-
-		final var eSlot2 = new ESlot();
-		eSlot2.id = VALUE_ID;
-		eSlot2.name = "diff_name";
-
-		assertNotEquals(eSlot1, eSlot2);
-		assertNotEquals(eSlot1.hashCode(),  eSlot2.hashCode());
 	}
 
 }

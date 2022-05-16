@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.xantar.xantarcore.models.Meal;
-
 @Service
 public class MealsService {
 
@@ -31,7 +29,7 @@ public class MealsService {
 	}
 
 	public Meal findById(Integer id) {
-		return EMealMapper.toModel(this.mealsRepository.findById(id)
+		return new Meal(this.mealsRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Meal with id ''" + id + " not found.")));
 	}
 
@@ -39,19 +37,17 @@ public class MealsService {
 		return Optional.ofNullable(this.mealsRepository.findAll())
 				.orElse(new ArrayList<EMeal>())
 				.stream()
-				.map(eMeal -> EMealMapper.toModel(eMeal))
+				.map(eMeal -> new Meal(eMeal))
 				.collect(Collectors.toList());
 	}
 
 	public Meal createMeal(Meal meal) {
-		final EMeal eMeal = EMealMapper.toEntity(meal);
-		if(eMeal == null) {
-			throw new IllegalArgumentException("Cannot insert null value as meal");
-		}
+		final EMeal eMeal = new EMeal(meal);
+
 		if(eMeal.name == null || eMeal.name.isBlank()) {
 			throw new IllegalArgumentException("Cannot insert empty value as name");
 		}
-		return EMealMapper.toModel(this.mealsRepository.save(eMeal));
+		return new Meal(this.mealsRepository.save(eMeal));
 	}
 
 	public Meal updateMeal(Meal updatedData) {
@@ -62,37 +58,44 @@ public class MealsService {
 		final EMeal originalEMeal = this.mealsRepository.findById(updatedData.id)
 				.orElseThrow(() -> new EntityNotFoundException("Meal with id ''" + updatedData.id + " not found."));
 
+		// TODO: check if there is a better and easy way
 		final EMeal updateEMeal = this.updateEntity(originalEMeal, updatedData);
 
-		return EMealMapper.toModel(this.mealsRepository.save(updateEMeal));
+		return new Meal(this.mealsRepository.save(updateEMeal));
+	}
+
+	public void deleteMeal(int mealId) {
+		this.mealsRepository.deleteById(mealId);
+	}
+
+	public List<Meal> findMealsBySlotAndMaxRows(int slotId, int maxRows) {
+		return this.mealsRepository.findMealsBySlotAndMaxRows(slotId, maxRows)
+				.stream()
+				.map(EMeal::toMeal)
+				.collect(Collectors.toList());
 	}
 
 	/**
-	 * Updates just non null values
+	 * Updates only non null values
 	 * **/
 	private EMeal updateEntity(EMeal originalEMeal, Meal updatedData) {
 		if(updatedData.name != null && updatedData.name.isBlank()) {
 			throw new IllegalArgumentException("Cannot insert empty value as name");
 		}
 
-		final EMeal eMeal =  new EMeal.EMealBuilder()
+		final EMeal eMeal =  EMeal.builder()
 				.withId(originalEMeal.id)
 				.withName(updatedData.name != null ? updatedData.name : originalEMeal.name)
 				.withDescription(updatedData.description  != null ? updatedData.description : originalEMeal.description)
 				.withImageThumb(updatedData.imageThumb != null ? updatedData.imageThumb : originalEMeal.imageThumb)
 				.build();
 
-		if(updatedData.slots != null) {
-			updatedData.slots.stream().forEach((slot) -> { eMeal.addSlot(ESlotMapper.toEntity(slot)); });
-		} else {
-			originalEMeal.slots.stream().forEach((slot) -> { eMeal.addSlot(slot); });
-		}
+		// TODO: check if this would work as expected
+		Optional.ofNullable(updatedData.slots)
+		.ifPresentOrElse(slots -> slots.stream().forEach(slot -> eMeal.addSlot(new ESlot(slot))),
+				() -> originalEMeal.slots.stream().forEach(slot -> eMeal.addSlot(slot)));
 
 		return eMeal;
-	}
-
-	public void deleteMeal(int mealId) {
-		this.mealsRepository.deleteById(mealId);
 	}
 
 }

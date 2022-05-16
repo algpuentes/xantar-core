@@ -1,10 +1,10 @@
 package com.xantar.xantarcore.db;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,7 +39,19 @@ public class EMeal {
 
 	EMeal() {}
 
-	EMeal(EMealBuilder builder) {
+	EMeal(Meal meal) {
+		Objects.requireNonNull(meal);
+
+		this.id = meal.id;
+		this.name = meal.name;
+		this.description = meal.description;
+		this.slots = Optional.ofNullable(meal.slots)
+				.map(list -> list.stream().map(slot -> new ESlot(slot)).collect(Collectors.toSet()))
+				.orElse(new HashSet<ESlot>());
+		this.imageThumb = meal.imageThumb;
+	}
+
+	private EMeal(EMealBuilder builder) {
 		this.id = builder.id;
 		this.name = builder.name;
 		this.description = builder.description;
@@ -47,72 +59,64 @@ public class EMeal {
 		this.imageThumb = builder.imageThumb;
 	}
 
-	public void addSlot(ESlot eSlot) {
+	static EMealBuilder builder() {
+		return new EMealBuilder();
+	}
+
+	void addSlot(ESlot eSlot) {
 		this.slots.add(eSlot);
 		eSlot.meals.add(this);
 	}
 
-	public void removeSlot(ESlot eSlot) {
+	void removeSlot(ESlot eSlot) {
 		eSlot.meals.remove(this);
 		this.slots.remove(eSlot);
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.id, this.name, this.description, this.slots, this.imageThumb);
+	Meal toMeal() {
+		return Meal.builder()
+				.withId(this.id)
+				.withName(this.name)
+				.withDescription(this.description)
+				.withImageThumb(this.imageThumb)
+				.withSlots(this.slots.stream().map(ESlot::toSlot).collect(Collectors.toList()))
+				.build();
 	}
 
-	@Override
-	public boolean equals(Object other) {
-		return Optional.ofNullable(other)
-				.filter(EMeal.class::isInstance)
-				.map(EMeal.class::cast)
-				.filter(object -> this.compareAttributes(object))
-				.isPresent();
-	}
-
-	private boolean compareAttributes(EMeal eMeal) {
-		return Objects.equals(this.id, eMeal.id)
-				&& Objects.equals(this.name, eMeal.name)
-				&& Objects.equals(this.description, eMeal.description)
-				&& Objects.equals(this.slots, eMeal.slots)
-				&& Arrays.equals(this.imageThumb, eMeal.imageThumb);
-	}
-
-	public static class EMealBuilder {
+	static class EMealBuilder {
 		private Integer	id;
 		private String	name;
 		private String	description;
 		private Set<ESlot> slots = new HashSet<>();
 		private byte[] imageThumb;
 
-		public EMealBuilder() {}
+		private EMealBuilder() {}
 
-		public EMeal build() {
+		EMeal build() {
 			return new EMeal(this);
 		}
 
-		public EMealBuilder withId(Integer id) {
+		EMealBuilder withId(Integer id) {
 			this.id = id;
 			return this;
 		}
 
-		public EMealBuilder withName(String name) {
+		EMealBuilder withName(String name) {
 			this.name = name;
 			return this;
 		}
 
-		public EMealBuilder withDescription(String description) {
+		EMealBuilder withDescription(String description) {
 			this.description = description;
 			return this;
 		}
 
-		public EMealBuilder withSlots(Set<ESlot> slots) {
+		EMealBuilder withSlots(Set<ESlot> slots) {
 			this.slots = slots;
 			return this;
 		}
 
-		public EMealBuilder withImageThumb(byte[] imageThumb) {
+		EMealBuilder withImageThumb(byte[] imageThumb) {
 			this.imageThumb = imageThumb;
 			return this;
 		}

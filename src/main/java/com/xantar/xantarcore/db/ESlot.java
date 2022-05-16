@@ -1,8 +1,6 @@
 package com.xantar.xantarcore.db;
 
 import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -21,35 +19,31 @@ public class ESlot {
 	@ManyToMany(mappedBy = "slots")
 	final Set<EMeal> meals = new HashSet<>();
 
+	ESlot(int id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
+	ESlot(Slot slot) {
+		this.id = slot.id;
+		this.name = slot.name;
+	}
+
 	ESlot() {}
 
-	public void addMeal(EMeal eMeal) {
+	void addMeal(EMeal eMeal) {
 		eMeal.slots.add(this);
 		this.meals.add(eMeal);
 	}
 
-	public void removeMeal(EMeal eMeal) {
+	void removeMeal(EMeal eMeal) {
 		this.meals.remove(eMeal);
 		eMeal.slots.remove(this);
 	}
 
-	@Override
-	public boolean equals(Object other) {
-		return Optional.ofNullable(other)
-				.filter(ESlot.class::isInstance)
-				.map(ESlot.class::cast)
-				.filter(object -> this.compareAttributes(object))
-				.isPresent();
-	}
-
-	private boolean compareAttributes(ESlot eSlot) {
-		return this.id == eSlot.id
-				&& Objects.equals(this.name, eSlot.name);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.id, this.name);
+	Slot toSlot() {
+		return new Slot(this.id, this.name);
 	}
 
 }
