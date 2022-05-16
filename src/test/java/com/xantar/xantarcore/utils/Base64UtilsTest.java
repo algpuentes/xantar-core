@@ -1,5 +1,6 @@
 package com.xantar.xantarcore.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -12,7 +13,6 @@ public class Base64UtilsTest {
 	public static byte[] decodeImage(String base64Image) {
 		return base64Image != null ? Base64.getDecoder().decode(base64Image) : null;
 	}
-
 
 	public static String encodeImage(byte[] image) {
 		return image != null ? Base64.getEncoder().encodeToString(image) : null;
@@ -51,4 +51,20 @@ public class Base64UtilsTest {
 
 		assertNotNull(result);
 	}
+
+	/**
+	 * encode and decode
+	 * */
+	//TODO: add propterty based test
+	@Test
+	void decode_withEncodedString_returnsOriginalString() {
+		final var originalEncodedString = "YmFzaWM=";
+
+		final byte[] decodedImage = Base64Utils.decodeImage(originalEncodedString);
+
+		final var encodedString = Base64Utils.encodeImage(decodedImage);
+
+		assertEquals(originalEncodedString, encodedString, "Reverse operation should not change the originar string.");
+	}
+
 }

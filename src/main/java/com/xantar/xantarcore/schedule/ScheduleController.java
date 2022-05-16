@@ -1,7 +1,7 @@
 package com.xantar.xantarcore.schedule;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +34,13 @@ public class ScheduleController {
 
 
 	@PostMapping()
-	public ResponseEntity<List<ScheduleDayJson>> createMeal(@RequestBody List<ScheduleDayJson> jMeal) {
-		final var scheduleList = new ArrayList<ScheduleDayJson>();
+	public ResponseEntity<List<ScheduleDayJson>> createMeal(@RequestBody List<ScheduleDayJson> jScheduleRequest) {
+		final var scheduleList = jScheduleRequest.stream().map(ScheduleDayJson::toScheduleDay).collect(Collectors.toList());
+		final List<ScheduleDayJson> jSchedule = this.scheduleService.generateSchedule(scheduleList)
+				.stream().map(day -> new ScheduleDayJson(day))
+				.collect(Collectors.toList());
 
-		return new ResponseEntity<List<ScheduleDayJson>>(scheduleList, HttpStatus.CREATED);
+		return new ResponseEntity<List<ScheduleDayJson>>(jSchedule, HttpStatus.CREATED);
 	}
 
 }

@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface ISlotsRepository extends JpaRepository<ESlot, Integer> {
+interface ISlotsRepository extends JpaRepository<ESlot, Integer> {
 
 }

@@ -16,10 +16,6 @@ import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.xantar.xantarcore.models.Meal;
-import com.xantar.xantarcore.models.Meal.MealBuilder;
-import com.xantar.xantarcore.models.Slot;
-
 public class MealsServiceTest {
 
 	MealsService mealsService;
@@ -46,8 +42,8 @@ public class MealsServiceTest {
 	void findOne_withExistingMeal_returnsCorrectMeal() {
 		this.mealsService = new MealsService(this.mealsRepositoryMock);
 
-		final var expectedMeal = new MealBuilder().withId(1).withName("name").withSlots(new ArrayList<Slot>()).build();
-		Mockito.when(this.mealsRepositoryMock.findById(expectedMeal.id)).thenReturn(Optional.of(EMealMapper.toEntity(expectedMeal)));
+		final var expectedMeal = Meal.builder().withId(1).withName("name").withSlots(new ArrayList<Slot>()).build();
+		Mockito.when(this.mealsRepositoryMock.findById(expectedMeal.id)).thenReturn(Optional.of(new EMeal(expectedMeal)));
 
 		final var resultMeal = this.mealsService.findById(expectedMeal.id);
 
@@ -96,11 +92,11 @@ public class MealsServiceTest {
 	@Test
 	void createMeal_notNullArgument_savesMealInDB() {
 		this.mealsService = new MealsService(this.mealsRepositoryMock);
-		final var expectedMeal = new MealBuilder().withId(1).withName("name").withSlots(new ArrayList<Slot>()).build();
+		final var expectedMeal = Meal.builder().withId(1).withName("name").withSlots(new ArrayList<Slot>()).build();
 
-		Mockito.when(this.mealsRepositoryMock.save(Mockito.any(EMeal.class))).thenReturn(EMealMapper.toEntity(expectedMeal));
+		Mockito.when(this.mealsRepositoryMock.save(Mockito.any(EMeal.class))).thenReturn(new EMeal(expectedMeal));
 
-		final var resultMeal = this.mealsService.createMeal(new MealBuilder().withName("name").build());
+		final var resultMeal = this.mealsService.createMeal(Meal.builder().withName("name").build());
 
 		Mockito.verify(this.mealsRepositoryMock).save(Mockito.any(EMeal.class));
 		assertEquals(expectedMeal, resultMeal);
@@ -134,27 +130,27 @@ public class MealsServiceTest {
 	void updateMeal_nullId_throwsException() {
 		this.mealsService = new MealsService(this.mealsRepositoryMock);
 
-		assertThrows(IllegalArgumentException.class, () -> this.mealsService.updateMeal(new MealBuilder().build()));
+		assertThrows(IllegalArgumentException.class, () -> this.mealsService.updateMeal(Meal.builder().build()));
 	}
 
 	@Test
 	void updateMeal_withExistingMeal_shouldUpdateValues() {
 		this.mealsService = new MealsService(this.mealsRepositoryMock);
-		final var dataToUpdate = new MealBuilder()
+		final var dataToUpdate = Meal.builder()
 				.withId(1)
 				.withName("name_changed")
 				.withDescription("description_changed")
 				.withImageThumb("image_changed".getBytes())
 				.withSlots(Collections.singletonList(new Slot(1, "slot")))
 				.build();
-		final var expectedMeal = new MealBuilder()
+		final var expectedMeal = Meal.builder()
 				.withId(1)
 				.withName("name_changed")
 				.withDescription("description_changed")
 				.withImageThumb("image_changed".getBytes())
 				.withSlots(Collections.singletonList(new Slot(1, "slot")))
 				.build();
-		final var existingMeal = new EMeal.EMealBuilder()
+		final var existingMeal = EMeal.builder()
 				.withId(1)
 				.withName("name")
 				.withDescription("description")
@@ -163,13 +159,13 @@ public class MealsServiceTest {
 				.build();
 
 		Mockito.when(this.mealsRepositoryMock.findById(1)).thenReturn(Optional.of(existingMeal));
-		Mockito.when(this.mealsRepositoryMock.save(EMealMapper.toEntity(expectedMeal))).thenReturn(EMealMapper.toEntity(expectedMeal));
+		Mockito.when(this.mealsRepositoryMock.save(new EMeal(expectedMeal))).thenReturn(new EMeal(expectedMeal));
 
 
 		final var resultMeal = this.mealsService.updateMeal(dataToUpdate);
 
 		Mockito.verify(this.mealsRepositoryMock).findById(dataToUpdate.id);
-		Mockito.verify(this.mealsRepositoryMock).save(EMealMapper.toEntity(expectedMeal));
+		Mockito.verify(this.mealsRepositoryMock).save(new EMeal(expectedMeal));
 		assertEquals(expectedMeal, resultMeal);
 	}
 
@@ -177,39 +173,39 @@ public class MealsServiceTest {
 	void updateMeal_withExistingMeal_shouldUpdateNoValues() {
 		this.mealsService = new MealsService(this.mealsRepositoryMock);
 		final var slot = new Slot(1, "slot");
-		final var dataToUpdate = new MealBuilder()
+		final var dataToUpdate = Meal.builder()
 				.withId(1)
 				.build();
-		final var expectedMeal = new MealBuilder()
+		final var expectedMeal = Meal.builder()
 				.withId(1)
 				.withName("name")
 				.withDescription("description")
 				.withImageThumb("image".getBytes())
 				.withSlots(Collections.singletonList(slot))
 				.build();
-		final var existingMeal = new EMeal.EMealBuilder()
+		final var existingMeal = EMeal.builder()
 				.withId(1)
 				.withName("name")
 				.withDescription("description")
 				.withImageThumb("image".getBytes())
-				.withSlots(Set.of(ESlotMapper.toEntity(slot)))
+				.withSlots(Set.of(new ESlot(slot)))
 				.build();
 
 		Mockito.when(this.mealsRepositoryMock.findById(1)).thenReturn(Optional.of(existingMeal));
-		Mockito.when(this.mealsRepositoryMock.save(EMealMapper.toEntity(expectedMeal))).thenReturn(EMealMapper.toEntity(expectedMeal));
+		Mockito.when(this.mealsRepositoryMock.save(new EMeal(expectedMeal))).thenReturn(new EMeal(expectedMeal));
 
 
 		final var resultMeal = this.mealsService.updateMeal(dataToUpdate);
 
 		Mockito.verify(this.mealsRepositoryMock).findById(dataToUpdate.id);
-		Mockito.verify(this.mealsRepositoryMock).save(EMealMapper.toEntity(expectedMeal));
+		Mockito.verify(this.mealsRepositoryMock).save(new EMeal(expectedMeal));
 		assertEquals(expectedMeal, resultMeal);
 	}
 
 	@Test
 	void updateMeal_withNonExistingMeal_shouldThrowException() {
 		this.mealsService = new MealsService(this.mealsRepositoryMock);
-		final var dataToUpdate = new MealBuilder()
+		final var dataToUpdate = Meal.builder()
 				.withId(1)
 				.withDescription("description_changed")
 				.build();
@@ -222,13 +218,13 @@ public class MealsServiceTest {
 	@Test
 	void updateMeal_withEmptyName_shouldThrowException() {
 		this.mealsService = new MealsService(this.mealsRepositoryMock);
-		final var dataToUpdate = new MealBuilder()
+		final var dataToUpdate = Meal.builder()
 				.withId(1)
 				.withName(" ")
 				.withDescription("description_changed")
 				.build();
 
-		final var existingMeal = new EMeal.EMealBuilder()
+		final var existingMeal = EMeal.builder()
 				.withId(1)
 				.withName("name")
 				.build();

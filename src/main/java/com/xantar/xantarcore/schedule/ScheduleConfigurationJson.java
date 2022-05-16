@@ -1,61 +1,36 @@
 package com.xantar.xantarcore.schedule;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.xantar.xantarcore.db.ScheduleConfiguration;
 import com.xantar.xantarcore.meals.MealResponseJson;
 import com.xantar.xantarcore.meals.SlotResponseJson;
 
-
-public class ScheduleConfigurationJson {
+/**
+ * This class represents a DTO of the resource <code>ScheduleConfiguration</code>. Its attributes have public visibility due to Jackson requirements,
+ * but this class should not be used out of the scope of this package.
+ * */
+class ScheduleConfigurationJson {
 
 	public final SlotResponseJson slot;
 	public final MealResponseJson meal;
 
-
+	@JsonCreator
 	public ScheduleConfigurationJson(SlotResponseJson slot, MealResponseJson meal) {
 		this.slot = slot;
 		this.meal = meal;
 	}
 
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		final List<String> list = new ArrayList<>();
-		sb.append("{");
-		if(this.slot != null) {
-			list.add("slot:" + this.slot.toString());
-		}
-		if(this.meal != null) {
-			list.add("meal:" + this.meal.toString());
-		}
-		sb.append(list.stream().collect(Collectors.joining(",")));
-		sb.append("}");
-
-		return sb.toString();
+	ScheduleConfigurationJson(ScheduleConfiguration scheduleConfiguration) {
+		this.slot = new SlotResponseJson(scheduleConfiguration.slot.id, scheduleConfiguration.slot.name);
+		this.meal = new MealResponseJson(scheduleConfiguration.meal);
 	}
 
-	@Override
-	public boolean equals(Object other) {
-		return Optional.ofNullable(other)
-				.filter(this.getClass()::isInstance)
-				.map(this.getClass()::cast)
-				.filter(this::compareAttributes)
-				.isPresent();
-	}
-
-
-	private boolean compareAttributes(ScheduleConfigurationJson other) {
-		return Objects.equals(this.slot, other.slot)
-				&& Objects.equals(this.meal, other.meal);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.slot, this.meal);
+	ScheduleConfiguration toScheduleConfiguration() {
+		return new ScheduleConfiguration(
+				Optional.ofNullable(this.slot).map(SlotResponseJson::toSlot).orElse(null),
+				Optional.ofNullable(this.meal).map(MealResponseJson::toMeal).orElse(null));
 	}
 
 }

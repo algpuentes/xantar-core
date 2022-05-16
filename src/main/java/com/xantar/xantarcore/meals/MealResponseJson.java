@@ -6,12 +6,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.tomcat.util.buf.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.xantar.xantarcore.db.Meal;
+import com.xantar.xantarcore.db.Slot;
+import com.xantar.xantarcore.utils.Base64Utils;
 
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -32,7 +33,33 @@ public class MealResponseJson {
 		this.imageThumb = imageThumb;
 	}
 
-	public MealResponseJson(Builder builder) {
+	public MealResponseJson(Meal meal) {
+		Objects.requireNonNull(meal);
+
+		this.id = meal.id;
+		this.name = meal.name;
+		this.description = meal.description;
+		this.slots = Optional.ofNullable(meal.slots)
+				.map(slotsList -> slotsList.stream().map(slot -> new SlotResponseJson(slot.id, slot.name)).collect(Collectors.toList()))
+				.orElse(new ArrayList<SlotResponseJson>());
+		this.imageThumb = Base64Utils.encodeImage(meal.imageThumb);
+	}
+
+	public Meal toMeal() {
+		return Meal.builder()
+				.withId(this.id)
+				.withName(this.name)
+				.withDescription(this.description)
+				.withSlots(Optional.ofNullable(this.slots)
+						.map(s -> s.stream()
+								.map(SlotResponseJson::toSlot)
+								.collect(Collectors.toList()))
+						.orElse(new ArrayList<Slot>()))
+				.withImageThumb(Base64Utils.decodeImage(this.imageThumb))
+				.build();
+	}
+
+	private MealResponseJson(Builder builder) {
 		this.id = builder.id;
 		this.name = builder.name;
 		this.description = builder.description;
@@ -40,69 +67,9 @@ public class MealResponseJson {
 		this.imageThumb = builder.imageThumb;
 	}
 
-	@Override
-	public String toString() {
-		final var list = new ArrayList<String>();
-
-		final StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		if(this.id != null) {
-			list.add("\"id\":" + this.id);
-		}
-		if(this.name != null) {
-			list.add("\"name\":\"" + this.name + "\"");
-		}
-		if(this.description != null) {
-			list.add("\"description\":\"" + this.description + "\"");
-		}
-		if(this.slots != null) {
-			list.add("\"slots\":" + this.slotsListToString(this.slots));
-		}
-		if(this.imageThumb != null) {
-			list.add("\"imageThumb\":\"" + this.imageThumb + "\"");
-		}
-		sb.append(StringUtils.join(list, ','));
-		sb.append("}");
-
-		return sb.toString();
+	public static Builder builder() {
+		return new Builder();
 	}
-
-	private String slotsListToString(List<SlotResponseJson> slots) {
-		final StringBuilder sb = new StringBuilder();
-
-		sb.append("[");
-		if(slots != null) {
-			sb.append(slots.stream()
-					.map(slot -> slot.toString())
-					.collect(Collectors.joining(",")));
-		}
-		sb.append("]");
-
-		return sb.toString();
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		return Optional.ofNullable(other)
-				.filter(MealResponseJson.class::isInstance)
-				.map(MealResponseJson.class::cast)
-				.filter(object -> this.compareAttributes(object))
-				.isPresent();
-	}
-
-	private boolean compareAttributes(MealResponseJson meal) {
-		return Objects.equals(this.id, meal.id)
-				&& Objects.equals(this.name, meal.name)
-				&& Objects.equals(this.description, meal.description)
-				&& Objects.equals(this.slots, meal.slots)
-				&& Objects.equals(this.imageThumb, meal.imageThumb);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.id, this.name, this.description, this.slots, this.imageThumb);
-	}
-
 
 	public static class Builder {
 		private Integer	id;
@@ -111,7 +78,7 @@ public class MealResponseJson {
 		private List<SlotResponseJson> slots;
 		private String imageThumb;
 
-		public Builder() {}
+		private Builder() {}
 
 		public MealResponseJson build() {
 			return new MealResponseJson(this);

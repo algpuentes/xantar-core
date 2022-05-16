@@ -1,4 +1,4 @@
-package com.xantar.xantarcore.models;
+package com.xantar.xantarcore.db;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +29,21 @@ public class ScheduleDay {
 		return sb.toString();
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		return Optional.ofNullable(other)
+				// TODO: replace isInstance for check of Class
+				.filter(this.getClass()::isInstance)
+				.map(this.getClass()::cast)
+				.filter(this::compareAttributes)
+				.isPresent();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.id, this.timestamp, this.configurations);
+	}
+
 	private String configsListToString() {
 		final StringBuilder sb = new StringBuilder();
 
@@ -43,25 +58,10 @@ public class ScheduleDay {
 		return sb.toString();
 	}
 
-	@Override
-	public boolean equals(Object other) {
-		return Optional.ofNullable(other)
-				.filter(this.getClass()::isInstance)
-				.map(this.getClass()::cast)
-				.filter(this::compareAttributes)
-				.isPresent();
-	}
-
-
 	private boolean compareAttributes(ScheduleDay other) {
 		return Objects.equals(this.id, other.id)
 				&& Objects.equals(this.timestamp, other.timestamp)
 				&& Objects.equals(this.configurations, other.configurations);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.id, this.timestamp, this.configurations);
 	}
 
 }
