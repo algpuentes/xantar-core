@@ -8,13 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class GetScheduleResponseJson {
+record GetScheduleResponseJson(List<ScheduleDayJson> days) {
 
     private static final String PROPERTY_DAYS = "days";
 
-    private final List<ScheduleDayJson> days;
-
-    public GetScheduleResponseJson(@JsonProperty(PROPERTY_DAYS) List<ScheduleDayJson> days) {
+    GetScheduleResponseJson(@JsonProperty(PROPERTY_DAYS) List<ScheduleDayJson> days) {
         this.days = Optional.ofNullable(days).map(ArrayList::new).orElse(new ArrayList<>());
     }
 

@@ -1,4 +1,4 @@
-package com.xantar.xantarcore.rest;
+package com.xantar.xantarcore.common.rest;
 
 import javax.persistence.EntityNotFoundException;
 

@@ -1,6 +1,6 @@
 package com.xantar.xantarcore.schedule;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -13,34 +13,35 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xantar.xantarcore.db.ScheduleService;
-
 @RestController
 @RequestMapping("/api/schedules")
 public class ScheduleController {
 
+	public static final String MESSAGE_START_GENERATION_OF_SCHEDULE = "Request [{}] - Start generation of schedule.";
 	Logger	LOGGER = LoggerFactory.getLogger(ScheduleController.class);
 
 	private final ScheduleService	scheduleService;
 
 	@Autowired
 	ScheduleController(ScheduleService scheduleService) {
-		if (scheduleService == null) {
-			throw new IllegalArgumentException("Schedule service must not be null");
-		}
-
-		this.scheduleService = scheduleService;
+		this.scheduleService = Objects.requireNonNull(scheduleService, "Schedule service must not be null");
 	}
 
-
 	@PostMapping()
-	public ResponseEntity<GetScheduleResponseJson> createMeal(@RequestBody List<ScheduleDayJson> jScheduleRequest) {
-		final var scheduleList = jScheduleRequest.stream().map(ScheduleDayJson::toScheduleDay).collect(Collectors.toList());
-		final List<ScheduleDayJson> jSchedule = this.scheduleService.generateSchedule(scheduleList)
-				.stream().map(ScheduleDayJson::new)
-				.collect(Collectors.toList());
+	public ResponseEntity<GetScheduleResponseJson> generateSchedule(@RequestBody List<ScheduleDayJson> jScheduleRequest) {
+		var requestId = UUID.randomUUID();
+		LOGGER.info(MESSAGE_START_GENERATION_OF_SCHEDULE, requestId);
 
-		return new ResponseEntity<>(new GetScheduleResponseJson(jSchedule), HttpStatus.CREATED);
+		return Optional.ofNullable(jScheduleRequest)
+				.filter(list -> !list.isEmpty())
+				.map(list -> list.stream()
+						.map(ScheduleDayJson::toScheduleDay)
+						.collect(Collectors.toList()))
+				.map(list -> this.scheduleService.generateSchedule(list).stream()
+						.map(ScheduleDayJson::new)
+						.collect(Collectors.toList()))
+				.map(jSchedule -> new ResponseEntity<>(new GetScheduleResponseJson(jSchedule), HttpStatus.CREATED))
+				.orElse(new ResponseEntity<>(new GetScheduleResponseJson(new ArrayList<>()), HttpStatus.CREATED));
 	}
 
 }

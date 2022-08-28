@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.xantar.xantarcore.db.MealsDbService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xantar.xantarcore.db.Meal;
-import com.xantar.xantarcore.db.MealsService;
-import com.xantar.xantarcore.utils.Base64Utils;
+import com.xantar.xantarcore.common.utils.Base64Utils;
 
 
 @WebMvcTest(MealsController.class)
@@ -38,7 +37,7 @@ public class MealsControllerTest {
 
 	private static final String MEAL_NAME = "name";
 
-	static final String ENDPOINT_API_MEALS = "/api/meals";
+	private static final String ENDPOINT_API_MEALS = "/api/meals";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -47,14 +46,14 @@ public class MealsControllerTest {
 	static MealsController mealsController;
 
 	@MockBean
-	static MealsService mealService;
+	static MealsDbService mealService;
 
 	/*
 	 * constructor
 	 * */
 	@Test
 	void constructor_withNullArgument_shouldThrowException() {
-		assertThrows(IllegalArgumentException.class, () -> new MealsService(null));
+		assertThrows(NullPointerException.class, () -> new MealsDbService(null));
 	}
 
 	/**
@@ -76,42 +75,41 @@ public class MealsControllerTest {
 	 * */
 	@Test
 	void findMeal_withExistingMeal_shouldReturnMeal() throws Exception {
-		final var requestedId = 1;
-		final var expectedMeal = Meal.builder()
+		var requestedId = 1;
+		var expectedMeal = Meal.builder()
 				.withId(requestedId)
 				.withName(MEAL_NAME)
 				.withDescription(MEAL_DESCRIPTION)
 				.withImageThumb(Base64Utils.decodeImage(MEAL_IMAGE_STRING))
 				.build();
 
-		Mockito.when(mealService.findById(expectedMeal.id)).thenReturn(expectedMeal);
+		Mockito.when(mealService.findById(expectedMeal.id())).thenReturn(Optional.of(expectedMeal));
 
 		this.mockMvc.perform(get(MealsControllerTest.ENDPOINT_API_MEALS + "/" + requestedId))
 		.andDo(print())
 		.andExpect(status().isOk())
 		.andExpect(jsonPath("$.id").value(requestedId))
-		.andExpect(jsonPath("$.name").value(expectedMeal.name))
-		.andExpect(jsonPath("$.description").value(expectedMeal.description))
+		.andExpect(jsonPath("$.name").value(expectedMeal.name()))
+		.andExpect(jsonPath("$.description").value(expectedMeal.description()))
 		.andExpect(jsonPath("$.slots").isEmpty())
-		.andExpect(jsonPath("$.imageThumb").value(Base64Utils.encodeImage(expectedMeal.imageThumb)));
+		.andExpect(jsonPath("$.imageThumb").value(Base64Utils.encodeImage(expectedMeal.imageThumb())));
 	}
 
-	//TODO: find best approach to test this use case
-	/*@Test
-	void findMeal_withNonExistinxgMeal_shouldReturnNotFoundError() throws Exception {
-		final var requestedId = 1;
+	@Test
+	void findMeal_withNonExistingMeal_shouldReturnNotFoundError() throws Exception {
+		var requestedId = 1;
 
 		this.mockMvc.perform(get(MealsControllerTest.ENDPOINT_API_MEALS + "/" + requestedId))
 		.andDo(print())
 		.andExpect(status().isNotFound());
-	}*/
+	}
 
 	/*
 	 * findAllMeals()
 	 * */
 	@Test
 	void findAllMeals_withExistingMeals_shouldReturnListOfMeals() throws Exception {
-		final var expectedMeal = Meal.builder()
+		var expectedMeal = Meal.builder()
 				.withId(1)
 				.withName(MEAL_NAME)
 				.withDescription(MEAL_DESCRIPTION)
@@ -124,11 +122,11 @@ public class MealsControllerTest {
 		.andDo(print())
 		.andExpect(status().isOk())
 		.andExpect(jsonPath("$", hasSize(1)))
-		.andExpect(jsonPath("$[0].id").value(expectedMeal.id))
-		.andExpect(jsonPath("$[0].name").value(expectedMeal.name))
-		.andExpect(jsonPath("$[0].description").value(expectedMeal.description))
+		.andExpect(jsonPath("$[0].id").value(expectedMeal.id()))
+		.andExpect(jsonPath("$[0].name").value(expectedMeal.name()))
+		.andExpect(jsonPath("$[0].description").value(expectedMeal.description()))
 		.andExpect(jsonPath("$[0].slots").isEmpty())
-		.andExpect(jsonPath("$[0].imageThumb").value(Base64Utils.encodeImage(expectedMeal.imageThumb)));
+		.andExpect(jsonPath("$[0].imageThumb").value(Base64Utils.encodeImage(expectedMeal.imageThumb())));
 	}
 
 
@@ -137,19 +135,19 @@ public class MealsControllerTest {
 	 * */
 	@Test
 	void createMeal_withNonExistingMeal_shouldReturnCreatedMeal() throws Exception {
-		final var requestedJsonMeal = MealResponseJson.builder()
+		var requestedJsonMeal = MealResponseJson.builder()
 				.withName(MEAL_NAME)
 				.withDescription(MEAL_DESCRIPTION)
 				.withImageThumb(MEAL_IMAGE_STRING)
 				.build();
-		final var requestedMeal = Meal.builder()
+		var requestedMeal = Meal.builder()
 				.withName(MEAL_NAME)
 				.withDescription(MEAL_DESCRIPTION)
 				.withImageThumb(Base64Utils.decodeImage(MEAL_IMAGE_STRING))
 				.build();
 
-		final var createdId = 1;
-		final var createdMeal = Meal.builder()
+		var createdId = 1;
+		var createdMeal = Meal.builder()
 				.withId(createdId)
 				.withName(MEAL_NAME)
 				.withDescription(MEAL_DESCRIPTION)
@@ -165,10 +163,10 @@ public class MealsControllerTest {
 		.andDo(print())
 		.andExpect(status().isCreated())
 		.andExpect(jsonPath("$.id").value(createdId))
-		.andExpect(jsonPath("$.name").value(requestedJsonMeal.name))
-		.andExpect(jsonPath("$.description").value(requestedJsonMeal.description))
+		.andExpect(jsonPath("$.name").value(requestedJsonMeal.name()))
+		.andExpect(jsonPath("$.description").value(requestedJsonMeal.description()))
 		.andExpect(jsonPath("$.slots").isEmpty())
-		.andExpect(jsonPath("$.imageThumb").value(requestedJsonMeal.imageThumb));
+		.andExpect(jsonPath("$.imageThumb").value(requestedJsonMeal.imageThumb()));
 
 		Mockito.verify(mealService).createMeal(Mockito.any(Meal.class));
 	}
@@ -178,17 +176,17 @@ public class MealsControllerTest {
 	 * */
 	@Test
 	void updateMeal_withExistingMeal_shouldReturnUpdatedMeal() throws Exception {
-		final var existingId = 1;
-		final var requestedJsonMeal = MealResponseJson.builder()
+		var existingId = 1;
+		var requestedJsonMeal = MealResponseJson.builder()
 				.withName("modified_name")
 				.withDescription("modified_description")
 				.withImageThumb("YMFzaWM=")
 				.build();
-		final var updatedMeal = Meal.builder()
+		var updatedMeal = Meal.builder()
 				.withId(existingId)
-				.withName(requestedJsonMeal.name)
-				.withDescription(requestedJsonMeal.description)
-				.withImageThumb(Base64Utils.decodeImage(requestedJsonMeal.imageThumb))
+				.withName(requestedJsonMeal.name())
+				.withDescription(requestedJsonMeal.description())
+				.withImageThumb(Base64Utils.decodeImage(requestedJsonMeal.imageThumb()))
 				.build();
 
 		Mockito.when(mealService.updateMeal(updatedMeal)).thenReturn(updatedMeal);
@@ -200,10 +198,10 @@ public class MealsControllerTest {
 		.andDo(print())
 		.andExpect(status().isOk())
 		.andExpect(jsonPath("$.id").value(existingId))
-		.andExpect(jsonPath("$.name").value(requestedJsonMeal.name))
-		.andExpect(jsonPath("$.description").value(requestedJsonMeal.description))
+		.andExpect(jsonPath("$.name").value(requestedJsonMeal.name()))
+		.andExpect(jsonPath("$.description").value(requestedJsonMeal.description()))
 		.andExpect(jsonPath("$.slots").isEmpty())
-		.andExpect(jsonPath("$.imageThumb").value(requestedJsonMeal.imageThumb));
+		.andExpect(jsonPath("$.imageThumb").value(requestedJsonMeal.imageThumb()));
 
 		Mockito.verify(mealService).updateMeal(Mockito.any(Meal.class));
 	}
@@ -214,7 +212,7 @@ public class MealsControllerTest {
 	@Test
 	void deleteMeal_withExistingMeal_shouldDeleteMeal() throws Exception {
 
-		final var toDeleteId = 1;
+		var toDeleteId = 1;
 
 		this.mockMvc.perform(delete(MealsControllerTest.ENDPOINT_API_MEALS + "/" + toDeleteId)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -227,12 +225,12 @@ public class MealsControllerTest {
 
 	private MealResponseJson toJsonResponse(Meal meal) {
 		return MealResponseJson.builder()
-				.withId(meal.id)
-				.withName(meal.name)
-				.withDescription(meal.description)
-				.withImageThumb(Base64Utils.encodeImage(meal.imageThumb))
-				.withSlots(Optional.ofNullable(meal.slots).map(r -> r.stream().map(slot -> new SlotResponseJson(slot.id, slot.name)).collect(Collectors.toList()))
-						.orElse(new ArrayList<SlotResponseJson>()))
+				.withId(meal.id())
+				.withName(meal.name())
+				.withDescription(meal.description())
+				.withImageThumb(Base64Utils.encodeImage(meal.imageThumb()))
+				.withSlots(Optional.ofNullable(meal.slots()).map(r -> r.stream().map(slot -> new SlotResponseJson(slot.id(), slot.name())).collect(Collectors.toList()))
+						.orElse(new ArrayList<>()))
 				.build();
 	}
 

@@ -1,9 +1,9 @@
 package com.xantar.xantarcore.schedule;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.xantar.xantarcore.db.ScheduleConfiguration;
 import com.xantar.xantarcore.meals.MealResponseJson;
 import com.xantar.xantarcore.meals.SlotResponseJson;
 
@@ -22,15 +22,27 @@ class ScheduleConfigurationJson {
 		this.meal = meal;
 	}
 
-	ScheduleConfigurationJson(ScheduleConfiguration scheduleConfiguration) {
-		this.slot = new SlotResponseJson(scheduleConfiguration.slot.id, scheduleConfiguration.slot.name);
-		this.meal = new MealResponseJson(scheduleConfiguration.meal);
+	ScheduleConfigurationJson(SlotSchedule slotSchedule) {
+		this.slot = new SlotResponseJson(slotSchedule.slot().id(), slotSchedule.slot().name());
+		this.meal = new MealResponseJson(slotSchedule.meal());
 	}
 
-	ScheduleConfiguration toScheduleConfiguration() {
-		return new ScheduleConfiguration(
+	SlotSchedule toScheduleConfiguration() {
+		return new SlotSchedule(
 				Optional.ofNullable(this.slot).map(SlotResponseJson::toSlot).orElse(null),
 				Optional.ofNullable(this.meal).map(MealResponseJson::toMeal).orElse(null));
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ScheduleConfigurationJson that = (ScheduleConfigurationJson) o;
+		return Objects.equals(slot, that.slot) && Objects.equals(meal, that.meal);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(slot, meal);
+	}
 }

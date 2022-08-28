@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Base64;
 
+import com.xantar.xantarcore.common.utils.Base64Utils;
 import org.junit.jupiter.api.Test;
 
 public class Base64UtilsTest {
@@ -23,14 +24,14 @@ public class Base64UtilsTest {
 	 * */
 	@Test
 	void decodeImage_withNullString_returnsNull() {
-		final var result = Base64Utils.decodeImage(null);
+		var result = Base64Utils.decodeImage(null);
 
 		assertNull(result);
 	}
 
 	@Test
 	void decodeImage_withNotNullString_returnsNotNullValue() {
-		final var result = Base64Utils.decodeImage("String");
+		var result = Base64Utils.decodeImage("String");
 
 		assertNotNull(result);
 	}
@@ -40,14 +41,14 @@ public class Base64UtilsTest {
 	 * */
 	@Test
 	void encodeImage_withNullString_returnsNull() {
-		final var result = Base64Utils.encodeImage(null);
+		var result = Base64Utils.encodeImage(null);
 
 		assertNull(result);
 	}
 
 	@Test
 	void encodeImage_withNotNullString_returnsNotNullValue() {
-		final var result = Base64Utils.encodeImage("String".getBytes());
+		var result = Base64Utils.encodeImage("String".getBytes());
 
 		assertNotNull(result);
 	}
@@ -58,11 +59,11 @@ public class Base64UtilsTest {
 	//TODO: add propterty based test
 	@Test
 	void decode_withEncodedString_returnsOriginalString() {
-		final var originalEncodedString = "YmFzaWM=";
+		var originalEncodedString = "YmFzaWM=";
 
 		final byte[] decodedImage = Base64Utils.decodeImage(originalEncodedString);
 
-		final var encodedString = Base64Utils.encodeImage(decodedImage);
+		var encodedString = Base64Utils.encodeImage(decodedImage);
 
 		assertEquals(originalEncodedString, encodedString, "Reverse operation should not change the originar string.");
 	}
