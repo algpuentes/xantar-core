@@ -44,6 +44,16 @@ public record Meal(Integer id, String name, String description, List<Slot> slots
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "Meal{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", description='" + description + '\'' +
+				", slots=" + slots +
+				'}';
+	}
+
 	private Meal(MealBuilder builder) {
 		this(builder.id, builder.name, builder.description, builder.slots, builder.imageThumb);
 	}
