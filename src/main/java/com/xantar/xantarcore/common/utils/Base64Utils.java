@@ -1,4 +1,4 @@
-package com.xantar.xantarcore.utils;
+package com.xantar.xantarcore.common.utils;
 
 import java.util.Base64;
 
