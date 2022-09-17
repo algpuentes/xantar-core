@@ -29,7 +29,7 @@ import com.xantar.xantarcore.common.utils.Base64Utils;
 
 
 @WebMvcTest(MealsController.class)
-public class MealsControllerTest {
+class MealsControllerTest {
 
 	private static final String MEAL_IMAGE_STRING = "YmFzaWM=";
 

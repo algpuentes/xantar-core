@@ -1,8 +1,6 @@
 package com.xantar.xantarcore.meals;
 
 import com.xantar.xantarcore.db.MealsDbService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +16,6 @@ import java.util.stream.Collectors;
 public class MealsController {
 
 	static final String ENDPOINT_API_MEALS = "/api/meals";
-
-	Logger	LOGGER = LoggerFactory.getLogger(MealsController.class);
 
 	private final MealsDbService mealsDbService;
 
@@ -61,10 +57,8 @@ public class MealsController {
 				.orElse(ResponseEntity.badRequest().build());
 	}
 
-
-
 	@DeleteMapping("/{mealId}")
-	public ResponseEntity<?> deleteMeal(@PathVariable("mealId") int mealId) {
+	public ResponseEntity<Void> deleteMeal(@PathVariable("mealId") int mealId) {
 		this.mealsDbService.deleteMeal(mealId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

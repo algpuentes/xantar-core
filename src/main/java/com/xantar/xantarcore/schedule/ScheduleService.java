@@ -3,6 +3,7 @@ package com.xantar.xantarcore.schedule;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.xantar.xantarcore.common.exceptions.ScheduleProcessingException;
 import com.xantar.xantarcore.meals.Meal;
 import com.xantar.xantarcore.db.MealsDbService;
 import org.slf4j.Logger;
@@ -62,8 +63,8 @@ public class ScheduleService {
 
 	private Stack<Meal> findMealsForSlot(Integer slotId, int numberOfMeals) {
 		var dbMeals = this.mealsDbService.findMealsBySlotAndMaxRows(slotId, numberOfMeals);
-		if(dbMeals.size() < 1) {
-			throw new RuntimeException("No meal available for slot with id ["+ slotId +"]");
+		if(dbMeals.isEmpty()) {
+			throw new ScheduleProcessingException("No meal available for slot with id ["+ slotId +"]");
 		}
 
 		return buildMealsStack(numberOfMeals, dbMeals);

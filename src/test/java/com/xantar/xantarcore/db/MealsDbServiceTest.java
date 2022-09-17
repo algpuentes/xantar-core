@@ -9,7 +9,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MealsDbServiceTest {
+class MealsDbServiceTest {
 
 	MealsDbService mealsDbService;
 	IMealsRepository mealsRepositoryMock = Mockito.mock(IMealsRepository.class);

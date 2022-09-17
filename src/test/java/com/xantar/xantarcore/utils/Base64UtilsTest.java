@@ -9,7 +9,7 @@ import java.util.Base64;
 import com.xantar.xantarcore.common.utils.Base64Utils;
 import org.junit.jupiter.api.Test;
 
-public class Base64UtilsTest {
+class Base64UtilsTest {
 
 	public static byte[] decodeImage(String base64Image) {
 		return base64Image != null ? Base64.getDecoder().decode(base64Image) : null;

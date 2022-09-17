@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-public class MealResponseJsonTest {
+class MealResponseJsonTest {
 
 	private static final int VALUE_ID = 1;
 	private static final String VALUE_NAME = "name";

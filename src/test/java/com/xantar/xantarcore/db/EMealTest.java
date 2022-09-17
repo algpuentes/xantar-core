@@ -11,7 +11,7 @@ import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EMealTest {
+class EMealTest {
 
 	private static final String EMPTY_NAME_FALLBACK = "New meal";
 	private static final int VALUE_ID = 1;

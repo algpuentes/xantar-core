@@ -71,7 +71,6 @@ public class MealsDbService {
 				.withImageThumb(updatedData.imageThumb() != null ? updatedData.imageThumb() : originalEMeal.imageThumb)
 				.build());
 
-		// TODO: check if this would work as expected
 		Optional.of(updatedData.slots())
 				.filter(slots -> !slots.isEmpty())
 		.ifPresentOrElse(slots -> slots.forEach(slot -> eFinalMeal.addSlot(new ESlot(slot))),

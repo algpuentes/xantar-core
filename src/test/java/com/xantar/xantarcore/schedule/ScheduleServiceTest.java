@@ -1,5 +1,6 @@
 package com.xantar.xantarcore.schedule;
 
+import com.xantar.xantarcore.common.exceptions.ScheduleProcessingException;
 import com.xantar.xantarcore.meals.Meal;
 import com.xantar.xantarcore.db.MealsDbService;
 import com.xantar.xantarcore.meals.Slot;
@@ -87,7 +88,7 @@ class ScheduleServiceTest {
 
         when(mockMealsService.findMealsBySlotAndMaxRows(1,3)).thenReturn(Collections.emptyList());
 
-        assertThrows(RuntimeException.class, () -> scheduleService.generateSchedule(requestedScheduledDays));
+        assertThrows(ScheduleProcessingException.class, () -> scheduleService.generateSchedule(requestedScheduledDays));
 
     }
 }

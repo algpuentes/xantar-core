@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MealTest {
+class MealTest {
 	private static final String EMPTY_NAME_FALLBACK = "New meal";
 
 	@ParameterizedTest
