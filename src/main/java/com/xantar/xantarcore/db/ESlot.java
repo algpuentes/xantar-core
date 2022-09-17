@@ -1,23 +1,19 @@
 package com.xantar.xantarcore.db;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.xantar.xantarcore.meals.Slot;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.Objects;
 
 @Entity
 @Table(name = "MASTER_SLOTS", schema = "XANTAR")
-public class ESlot {
+class ESlot {
 
 	@Id
 	int id;
 	String name;
-
-	@ManyToMany(mappedBy = "slots")
-	final Set<EMeal> meals = new HashSet<>();
 
 	ESlot(int id, String name) {
 		super();
@@ -26,24 +22,26 @@ public class ESlot {
 	}
 
 	ESlot(Slot slot) {
-		this.id = slot.id;
-		this.name = slot.name;
+		this.id = slot.id();
+		this.name = slot.name();
 	}
 
 	ESlot() {}
-
-	void addMeal(EMeal eMeal) {
-		eMeal.slots.add(this);
-		this.meals.add(eMeal);
-	}
-
-	void removeMeal(EMeal eMeal) {
-		this.meals.remove(eMeal);
-		eMeal.slots.remove(this);
-	}
 
 	Slot toSlot() {
 		return new Slot(this.id, this.name);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ESlot eSlot = (ESlot) o;
+		return id == eSlot.id && Objects.equals(name, eSlot.name);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name);
+	}
 }

@@ -1,8 +1,10 @@
-package com.xantar.xantarcore.utils;
+package com.xantar.xantarcore.common.utils;
 
 import java.util.Base64;
 
 public class Base64Utils {
+
+	private Base64Utils() {}
 
 	public static byte[] decodeImage(String base64Image) {
 		return base64Image != null ? Base64.getDecoder().decode(base64Image) : null;
